@@ -1,5 +1,4 @@
-#ifndef UTILS
-#define UTILS 1
+#pragma once
 
 #include <array>
 #include <vector>
@@ -15,7 +14,7 @@ constexpr int D = 2;
 constexpr int SHIPS = const_pow(N * (N + 1), D);
 constexpr int CELLS = const_pow(N, D);
 
-extern std::vector<float> BINOMS;
+extern std::vector<double> BINOMS;
 
 typedef std::array<int, D> Coordinate;
 
@@ -27,4 +26,13 @@ struct Ship
 
 using Fleet = std::vector<Ship>;
 
-#endif
+
+inline int toIndex(Coordinate& c)
+{
+	int index = 0;
+	for (int d = D - 1; d >= 0; --d) {
+		int offset = c[(D - 1) - d] * const_pow(N, d);
+		index += offset;
+	}
+	return index;
+}

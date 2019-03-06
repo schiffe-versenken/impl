@@ -5,7 +5,7 @@
 
 std::random_device rd;  //Will be used to obtain a seed for the random number engine
 std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-std::uniform_int_distribution<> dis(1, N);
+std::uniform_int_distribution<> dis(0, N - 1);
 
 Fleet genFleet(int k)
 {
@@ -27,24 +27,14 @@ Fleet genFleet(int k)
 
 }
 
-int toIndex(Coordinate& c)
-{
-	int index = 0;
-	for (int d = D - 1; d >= 0; --d) {
-		int offset = c[(D - 1) - d] * (int) pow(N, d);
-		index += offset;
-	}
-	return index;
-}
-
 int traverse(Strategy& strat, Coordinate& c, Coordinate& max, int d)
 {
-	int length = max[d] - c[d];
+	int length = max[d] - c[d] + 1;
 	int min = CELLS;
-	if (d == D - 2)
+	if (d == D - 1)
 	{
 		int index = toIndex(c);
-		for (int i = 0; i <= length; ++i) {
+		for (int i = 0; i < length; ++i) {
 			int value = strat[index + i];
 			if (value < min) {
 				min = value;
@@ -53,13 +43,12 @@ int traverse(Strategy& strat, Coordinate& c, Coordinate& max, int d)
 	}
 	else {
 		Coordinate cnew = c;
-		cnew[d] = cnew[d] + 1;
 		for (int i = 0; i < length; ++i) {
-			cnew[d] = cnew[d] + 1;
 			int value = traverse(strat, cnew, max, d + 1);
 			if (value < min) {
 				min = value;
 			}
+			cnew[d] = cnew[d] + 1;
 		}
 	}
 	return min;
@@ -85,13 +74,14 @@ int calcTurns(Strategy& strat, Fleet& fleet)
 
 }
 
-float calcExpectedValue(Strategy& strat, int k)
+double calcExpectedValue(Strategy& strat, int k)
 {
-	float expected = 0;
+	double expected = 0;
 	int rounds = 100;
 	for (int i = 1; i <= rounds; ++i) {
 		Fleet f = genFleet(k);
 		int e = calcTurns(strat, f);
+		std::cout << e << '\n';
 		expected += (e - expected) / i;
 	}
 	return expected;
@@ -99,11 +89,12 @@ float calcExpectedValue(Strategy& strat, int k)
 }
 
 
-float calcExpectedValue(Strategy& strat)
+double calcExpectedValue(Strategy& strat)
 {
-	float expected = 0;
+	double expected = 0;
 	for (int k = 1; k <= SHIPS; ++k) {
-		float g = BINOMS[k] / (pow(2, SHIPS) - 1);
+		double g = BINOMS[k] / (pow(2, SHIPS) - 1);
+		std::cout << g << '\n';
 		expected += calcExpectedValue(strat, k) * g;
 	}
 	return expected;
@@ -112,11 +103,8 @@ float calcExpectedValue(Strategy& strat)
 
 int main()
 {
-	auto x = std::vector<Ship>{10};
 	Strategy* strat = testStrategy();
-
-	float e = calcExpectedValue(*strat);
+	double e = calcExpectedValue(*strat);
 	std::cout << e << '\n';
-    printf("hello from ConsoleApplication1!\n");
     return 0;
 }

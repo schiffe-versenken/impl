@@ -1,18 +1,18 @@
 #include "utils.h"
 
 
-std::vector<float> createBinoms()
+std::vector<double> createBinoms()
 {
-	std::vector<float> values{ SHIPS + 1 };
+	std::vector<double> values(SHIPS + 1);
 	values[0] = 1;
-	float last = 1;
+	double last = 1;
 
-	for (int i = 1; i < SHIPS; ++i) {
-		float next = last * (1 / i) * (SHIPS - i + 1);
+	for (int i = 1; i <= SHIPS; ++i) {
+		double next = last / (double) i * (double) (SHIPS - i + 1);
 		last = next;
 		values[i] = next;
 	}
 	return values;
 }
 
-std::vector<float> BINOMS = createBinoms();
+std::vector<double> BINOMS = createBinoms();
