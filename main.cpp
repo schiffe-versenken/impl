@@ -1,11 +1,6 @@
-#include <random>
 #include <iostream>
 #include "utils.h"
 #include "strategies.h"
-
-std::random_device rd;  //Will be used to obtain a seed for the random number engine
-std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-std::uniform_int_distribution<> dis(0, N - 1);
 
 Fleet genFleet(int k)
 {
@@ -16,8 +11,8 @@ Fleet genFleet(int k)
 		Coordinate min;
 		Coordinate max;
 		for (int d = 0; d < D; ++d) {
-			int v1 = dis(gen);
-			int v2 = dis(gen);
+			int v1 = genRandomCoordinate();
+			int v2 = genRandomCoordinate();
 			min[d] = std::min(v1, v2);
 			max[d] = std::max(v1, v2);
 		}
@@ -93,7 +88,7 @@ double calcExpectedValue(Strategy& strat)
 {
 	double expected = 0;
 	for (int k = 1; k <= SHIPS; ++k) {
-		double g = BINOMS[k] / (pow(2, SHIPS) - 1);
+		double g = BINOMS[k] / FLEETS;
 		std::cout << g << '\n';
 		expected += calcExpectedValue(strat, k) * g;
 	}

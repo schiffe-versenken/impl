@@ -1,5 +1,16 @@
 #include "utils.h"
+#include <random>
 
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<> dis(0, N - 1);
+
+double FLEETS = std::pow((double)2, (double) SHIPS) - 1;
+
+int genRandomCoordinate()
+{
+	return dis(gen);
+}
 
 std::vector<double> createBinoms()
 {

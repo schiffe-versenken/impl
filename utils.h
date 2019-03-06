@@ -13,6 +13,7 @@ constexpr int D = 2;
 
 constexpr int SHIPS = const_pow(N * (N + 1), D);
 constexpr int CELLS = const_pow(N, D);
+extern double FLEETS;
 
 extern std::vector<double> BINOMS;
 
@@ -26,6 +27,7 @@ struct Ship
 
 using Fleet = std::vector<Ship>;
 
+int genRandomCoordinate();
 
 inline int toIndex(Coordinate& c)
 {
