@@ -1,105 +1,82 @@
 #include <iostream>
+#include <getopt.h>
+#include <string.h>
 #include "utils.h"
 #include "strategies.h"
 
-Fleet genFleet(int k)
+int main(int argc, char **argv)
 {
+	int c;
+	int n;
+	int d;
+	const char* stratname = nullptr;
 
-	Fleet fleet = std::vector<Ship>{ k };
-
-	for (int i = 0; i < k; ++i) {
-		Coordinate min;
-		Coordinate max;
-		for (int d = 0; d < D; ++d) {
-			int v1 = genRandomCoordinate();
-			int v2 = genRandomCoordinate();
-			min[d] = std::min(v1, v2);
-			max[d] = std::max(v1, v2);
-		}
-		fleet[i] = Ship{ min, max };
-	}
-	return fleet;
-
-}
-
-int traverse(Strategy& strat, Coordinate& c, Coordinate& max, int d)
-{
-	int length = max[d] - c[d] + 1;
-	int min = CELLS;
-	if (d == D - 1)
+	while (1)
 	{
-		int index = toIndex(c);
-		for (int i = 0; i < length; ++i) {
-			int value = strat[index + i];
-			if (value < min) {
-				min = value;
-			}
-		}
-	}
-	else {
-		Coordinate cnew = c;
-		for (int i = 0; i < length; ++i) {
-			int value = traverse(strat, cnew, max, d + 1);
-			if (value < min) {
-				min = value;
-			}
-			cnew[d] = cnew[d] + 1;
-		}
-	}
-	return min;
-
-}
-
-int traverse(Strategy& strat, Ship& s)
-{
-	return traverse(strat, s.min, s.max, 0);
-}
-
-int calcTurns(Strategy& strat, Fleet& fleet)
-{
-	int turns = 0;
-	for (Ship& ship : fleet) {
-		int min = traverse(strat, ship);
-		if (min > turns)
+		option long_options[] =
 		{
-			turns = min;
+		{ "size",  required_argument, 0, 'n' },
+		{ "dimensions",  required_argument, 0, 'd' },
+		{ "strategy",    required_argument, 0, 's' },
+		{ 0, 0, 0, 0 }
+		};
+		/* getopt_long stores the option index here. */
+		int option_index = 0;
+
+		c = getopt_long(argc, argv, "n:d:s:",
+			long_options, &option_index);
+
+		/* Detect the end of the options. */
+		if (c == -1)
+			break;
+
+		switch (c)
+		{
+		case 0:
+			/* If this option set a flag, do nothing else now. */
+			if (long_options[option_index].flag != 0)
+				break;
+			printf("option %s", long_options[option_index].name);
+			if (optarg)
+				printf(" with arg %s", optarg);
+			printf("\n");
+			break;
+
+		case 'n':
+			n = atoi(optarg);
+			break;
+
+		case 'd':
+			d = atoi(optarg);
+			break;
+
+		case 's':
+			stratname = optarg;
+			break;
+
+		case '?':
+			/* getopt_long already printed an error message. */
+			break;
+
+		default:
+			abort();
 		}
 	}
-	return turns;
 
-}
+	initValues(n, d);
 
-double calcExpectedValue(Strategy& strat, int k)
-{
-	double expected = 0;
-	int rounds = 100;
-	for (int i = 1; i <= rounds; ++i) {
-		Fleet f = genFleet(k);
-		int e = calcTurns(strat, f);
-		std::cout << e << '\n';
-		expected += (e - expected) / i;
+	Strategy* strat = nullptr;
+	if (strcmp(stratname, "test") == 0)
+	{
+		strat = testStrategy();
 	}
-	return expected;
-
-}
-
-
-double calcExpectedValue(Strategy& strat)
-{
-	double expected = 0;
-	for (int k = 1; k <= SHIPS; ++k) {
-		double g = BINOMS[k] / FLEETS;
-		std::cout << g << '\n';
-		expected += calcExpectedValue(strat, k) * g;
+	if (strcmp(stratname, "random") == 0)
+	{
+		strat = randomStrategy();
 	}
-	return expected;
-}
 
-
-int main()
-{
-	Strategy* strat = testStrategy();
 	double e = calcExpectedValue(*strat);
 	std::cout << e << '\n';
-    return 0;
+
+	exit(0);
 }

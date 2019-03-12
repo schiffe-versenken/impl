@@ -62,11 +62,13 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClCompile Include="defs.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="strategies.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="defs.h" />
     <ClInclude Include="strategies.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
