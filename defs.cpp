@@ -38,3 +38,8 @@ Fleet emptyFleet(int k)
 	Fleet f = Fleet(k, Ship { Coordinate(D, 0) , Coordinate(D, 0) });
 	return f;
 }
+
+Strategy* emptyStrategy()
+{
+	return new Strategy(CELLS, 0);
+}

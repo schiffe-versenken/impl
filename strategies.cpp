@@ -1,9 +1,11 @@
 #include "strategies.h"
 #include <random>
+#include <map>
+#include <functional>
 
 Strategy* testStrategy()
 {
-	Strategy* strat = new Strategy();
+	Strategy* strat = emptyStrategy();
 	for (int i = 0; i < CELLS; ++i) {
 		(*strat)[i] = i + 1;
 	}
@@ -12,10 +14,9 @@ Strategy* testStrategy()
 
 Strategy* randomStrategy()
 {
-	Strategy* strat = new Strategy();
-	strat->reserve(CELLS);
+	Strategy* strat = emptyStrategy();
 	for (int i = 0; i < CELLS; ++i) {
-		strat->push_back(i + 1);
+		(*strat)[i] = i + 1;
 	}
 
 	std::random_device rd;
@@ -28,3 +29,12 @@ Strategy* randomStrategy()
 	return strat;
 }
 
+std::map<std::string, std::function<Strategy*()>> strategyNames = {
+	{ "test", &testStrategy },
+	{ "random", &randomStrategy }
+};
+
+Strategy* createStrategy(std::string& name)
+{
+	return strategyNames[name]();
+}

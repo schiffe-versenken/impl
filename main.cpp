@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 	int c;
 	int n;
 	int d;
-	const char* stratname = nullptr;
+	std::string stratname;
 
 	while (1)
 	{
@@ -65,16 +65,7 @@ int main(int argc, char **argv)
 
 	initValues(n, d);
 
-	Strategy* strat = nullptr;
-	if (strcmp(stratname, "test") == 0)
-	{
-		strat = testStrategy();
-	}
-	if (strcmp(stratname, "random") == 0)
-	{
-		strat = randomStrategy();
-	}
-
+	Strategy* strat = createStrategy(stratname);
 	double e = calcExpectedValue(*strat);
 	std::cout << e << '\n';
 

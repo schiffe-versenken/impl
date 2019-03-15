@@ -2,6 +2,4 @@
 
 #include "utils.h"
 
-Strategy* testStrategy();
-
-Strategy* randomStrategy();
+Strategy* createStrategy(std::string& name);

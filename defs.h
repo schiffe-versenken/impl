@@ -27,3 +27,5 @@ void initValues(int n, int d);
 Coordinate emptyCoord();
 
 Fleet emptyFleet(int k);
+
+Strategy* emptyStrategy();
