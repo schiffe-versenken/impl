@@ -8,4 +8,4 @@ int traverse(Strategy& strat, Ship& s);
 
 int toIndex(Coordinate& c);
 
-double calcExpectedValue(Strategy& strat);
+double calcExpectedValue(Strategy& strat, int rounds);

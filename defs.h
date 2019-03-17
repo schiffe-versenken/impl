@@ -8,7 +8,6 @@ extern int D;
 extern int SHIPS;
 extern int CELLS;
 extern double FLEETS;
-extern std::vector<double> BINOMS;
 
 typedef std::vector<int> Coordinate;
 

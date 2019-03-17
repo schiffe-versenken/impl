@@ -6,7 +6,7 @@ Linux: Use `make` to build the program using g++.
 
 # Usage
 
-`./sv -n <size of playing field> -d <dimensions> -s <strategy>`
+`./sv -n <size of playing field> -d <dimensions> -r <rounds> -s <strategy>`
 
 Available strategies:
 - `random`

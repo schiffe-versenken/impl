@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <random>
+#include "fleet_distribution.h"
 
 
 void genFleet(Fleet& fleet, int k)
@@ -61,10 +62,11 @@ int traverse(Strategy& strat, Ship& s)
 	return traverse(strat, s.min, s.max, 0);
 }
 
-int calcTurns(Strategy& strat, Fleet& fleet)
+int calcTurns(Strategy& strat, Fleet& fleet, int k)
 {
 	int turns = 0;
-	for (Ship& ship : fleet) {
+	for (int i = 0; i < k;++i) {
+		Ship& ship = fleet[i];
 		int min = traverse(strat, ship);
 		if (min > turns)
 		{
@@ -75,29 +77,18 @@ int calcTurns(Strategy& strat, Fleet& fleet)
 
 }
 
-double calcExpectedValue(Strategy& strat, int k)
+double calcExpectedValue(Strategy& strat, int rounds)
 {
-	Fleet f = emptyFleet(k);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	FleetDistribution dist = FleetDistribution();
+	Fleet f = emptyFleet(SHIPS);
 	double expected = 0;
-	int rounds = 10;
 	for (int i = 1; i <= rounds; ++i) {
+		int k = dist(gen);
 		genFleet(f, k);
-		int e = calcTurns(strat, f);
-		//std::cout << e << '\n';
-		expected += (e - expected) / i;
-	}
-	return expected;
-
-}
-
-
-double calcExpectedValue(Strategy& strat)
-{
-	double expected = 0;
-	for (int k = 1; k <= SHIPS; ++k) {
-		double g = BINOMS[k] / FLEETS;
 		//std::cout << g << '\n';
-		expected += calcExpectedValue(strat, k) * g;
+		expected += (calcTurns(strat, f, k) - expected) / i;
 	}
 	return expected;
 }

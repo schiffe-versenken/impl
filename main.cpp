@@ -8,6 +8,7 @@ int main(int argc, char **argv)
 {
 	int c;
 	int n;
+	int r;
 	int d;
 	std::string stratname;
 
@@ -17,13 +18,14 @@ int main(int argc, char **argv)
 		{
 		{ "size",  required_argument, 0, 'n' },
 		{ "dimensions",  required_argument, 0, 'd' },
+		{ "rounds",    required_argument, 0, 'r' },
 		{ "strategy",    required_argument, 0, 's' },
 		{ 0, 0, 0, 0 }
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "n:d:s:",
+		c = getopt_long(argc, argv, "n:d:r:s:",
 			long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -46,6 +48,10 @@ int main(int argc, char **argv)
 			n = atoi(optarg);
 			break;
 
+		case 'r':
+			r = atoi(optarg);
+			break;
+
 		case 'd':
 			d = atoi(optarg);
 			break;
@@ -66,7 +72,7 @@ int main(int argc, char **argv)
 	initValues(n, d);
 
 	Strategy* strat = createStrategy(stratname);
-	double e = calcExpectedValue(*strat);
+	double e = calcExpectedValue(*strat, r);
 	std::cout << e << '\n';
 
 	exit(0);
