@@ -17,6 +17,12 @@ struct Ship
 	Coordinate max;
 };
 
+struct Tuple
+{
+    std::vector<int> coords;
+    std::vector<int> levels;
+};
+
 using Fleet = std::vector<Ship>;
 
 using Strategy = std::vector<int>;
