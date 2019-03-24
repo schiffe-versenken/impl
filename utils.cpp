@@ -1,94 +1,69 @@
 #include "utils.h"
 #include <random>
 #include "fleet_distribution.h"
+#include <climits>
+#include "strategies.h"
+#include "ship_generator.h"
+#include <iostream>
 
-
-void genFleet(Fleet& fleet, int k)
-{
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_int_distribution<> dis(0, N - 1);
-
-	for (int i = 0; i < k; ++i) {
-		for (int d = 0; d < D; ++d) {
-			int v1 = dis(gen);
-			int v2 = dis(gen);
-			fleet[i].min[d] = std::min(v1, v2);
-			fleet[i].max[d] = std::max(v1, v2);
-		}
-	}
-}
 
 int toIndex(Coordinate& c)
 {
 	int index = 0;
-	for (int d = D - 1; d >= 0; --d) {
+	for (int d = D - BLOCK_DIMENSION - 1; d >= 0; --d) {
 		int offset = c[(D - 1) - d] * std::pow((double)N, d);
 		index += offset;
 	}
 	return index;
 }
 
-int traverse(Strategy& strat, Coordinate& c, Coordinate& max, int d)
+int calcTurns(std::vector<Ship>& ships)
 {
-	int length = max[d] - c[d] + 1;
-	int min = CELLS;
-	if (d == D - 1)
+	static StrategyBlock* block = emptyStrategyBlock();
+	int turns = -1;
+	for (int b = 0; b <= BLOCK_COUNT; b++)
 	{
-		int index = toIndex(c);
-		for (int i = 0; i < length; ++i) {
-			int value = strat[index + i];
-			if (value < min) {
-				min = value;
+		BlockCoordinate c = generateBlock(block, b);
+		for (int i = 0; i < ships.size(); ++i) {
+			Ship& ship = ships[i];
+			int min = findMin(c, *block, ship);
+			if (min > turns)
+			{
+				turns = min;
 			}
-		}
-	}
-	else {
-		Coordinate cnew = c;
-		for (int i = 0; i < length; ++i) {
-			int value = traverse(strat, cnew, max, d + 1);
-			if (value < min) {
-				min = value;
-			}
-			cnew[d] = cnew[d] + 1;
-		}
-	}
-	return min;
-
-}
-
-int traverse(Strategy& strat, Ship& s)
-{
-	return traverse(strat, s.min, s.max, 0);
-}
-
-int calcTurns(Strategy& strat, Fleet& fleet, int k)
-{
-	int turns = 0;
-	for (int i = 0; i < k;++i) {
-		Ship& ship = fleet[i];
-		int min = traverse(strat, ship);
-		if (min > turns)
-		{
-			turns = min;
 		}
 	}
 	return turns;
 
 }
 
-double calcExpectedValue(Strategy& strat, int rounds)
+int calcTurns(int currentTurns, std::vector<Ship>& ships, int shipsLeft)
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
+	int size = std::min(shipsLeft, DATA_SIZE);
+	static ShipGenerator gen = ShipGenerator();
+	gen(ships, size, GENERATOR);
+	int turns = calcTurns(ships);
+	int maxTurns = std::max(currentTurns, turns);
+	if (size > DATA_SIZE)
+	{
+		return calcTurns(maxTurns, ships, shipsLeft - DATA_SIZE);
+	} else
+	{
+		return maxTurns;
+	}
+}
+
+double calcExpectedValue(int rounds)
+{
+	static std::vector<Ship> ships = std::vector<Ship>(DATA_SIZE, Ship {emptyCoord(), emptyCoord()});
 	FleetDistribution dist = FleetDistribution();
-	Fleet f = emptyFleet(SHIPS);
 	double expected = 0;
 	for (int i = 1; i <= rounds; ++i) {
-		int k = dist(gen);
-		genFleet(f, k);
-		//std::cout << g << '\n';
-		expected += (calcTurns(strat, f, k) - expected) / i;
+		int k = dist(GENERATOR);
+		std::cout << k << '\n';
+		int turns = calcTurns(0, ships, k);
+		std::cout << turns << "t \n";
+		expected += (turns - expected) / i;
 	}
 	return expected;
 }

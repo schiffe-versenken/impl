@@ -5,9 +5,18 @@ int N = 0;
 int D = 0;
 int SHIPS = 0;
 int CELLS = 0;
+
+int BLOCK_DIMENSION = 0;
+int BLOCK_COUNT = 0;
+int BLOCK_SIZE = 0;
+
+int DATA_SIZE = 0;
+
+std::mt19937 GENERATOR;
+
 double FLEETS = 0.0;
 
-void initValues(int n, int d)
+void initValues(int n, int d, int b, int seed)
 {
 	N = n;
 	D = d;
@@ -15,6 +24,14 @@ void initValues(int n, int d)
 	SHIPS = std::pow((double) N * (N + 1), D);
 	CELLS = std::pow((double) N, D);
 	FLEETS = std::pow((double)2, (double)SHIPS) - 1;
+
+	BLOCK_DIMENSION = b;
+	BLOCK_SIZE = std::pow((double)N, D - BLOCK_DIMENSION);
+	BLOCK_COUNT = CELLS / BLOCK_SIZE;
+
+	DATA_SIZE = sqrt(CELLS);
+
+	GENERATOR = std::mt19937(seed);
 }
 
 Coordinate emptyCoord()
@@ -23,13 +40,13 @@ Coordinate emptyCoord()
 	return c;
 }
 
-Fleet emptyFleet(int k)
+BlockCoordinate emptyBlockCoord()
 {
-	Fleet f = Fleet(k, Ship { Coordinate(D, 0) , Coordinate(D, 0) });
-	return f;
+	BlockCoordinate c = BlockCoordinate(BLOCK_DIMENSION, 0);
+	return c;
 }
 
-Strategy* emptyStrategy()
+StrategyBlock* emptyStrategyBlock()
 {
-	return new Strategy(CELLS, 0);
+	return new StrategyBlock(BLOCK_SIZE);
 }

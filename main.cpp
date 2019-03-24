@@ -10,6 +10,8 @@ int main(int argc, char **argv)
 	int n;
 	int r;
 	int d;
+	int seed;
+	int blocks;
 	std::string stratname;
 
 	while (1)
@@ -20,12 +22,14 @@ int main(int argc, char **argv)
 		{ "dimensions",  required_argument, 0, 'd' },
 		{ "rounds",    required_argument, 0, 'r' },
 		{ "strategy",    required_argument, 0, 's' },
+		{ "seed",    required_argument, 0, 'x' },
+		{ "blocks",    required_argument, 0, 'b' },
 		{ 0, 0, 0, 0 }
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "n:d:r:s:",
+		c = getopt_long(argc, argv, "n:d:r:s:x:b:",
 			long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -56,6 +60,14 @@ int main(int argc, char **argv)
 			d = atoi(optarg);
 			break;
 
+		case 'x':
+			seed = atoi(optarg);
+			break;
+
+		case 'b':
+			blocks = atoi(optarg);
+			break;
+
 		case 's':
 			stratname = optarg;
 			break;
@@ -69,10 +81,9 @@ int main(int argc, char **argv)
 		}
 	}
 
-	initValues(n, d);
-
-	Strategy* strat = createStrategy(stratname);
-	double e = calcExpectedValue(*strat, r);
+	initValues(n, d, blocks, seed);
+	createStrategy(stratname);
+	double e = calcExpectedValue(r);
 	std::cout << e << '\n';
 
 	exit(0);

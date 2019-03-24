@@ -2,4 +2,8 @@
 
 #include "utils.h"
 
-Strategy* createStrategy(std::string& name);
+void createStrategy(std::string& name);
+
+BlockCoordinate generateBlock(StrategyBlock* b, int index);
+
+int findMin(BlockCoordinate& c, StrategyBlock& strat, Ship& s);

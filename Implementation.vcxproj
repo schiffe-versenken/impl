@@ -71,6 +71,7 @@
   <ItemGroup>
     <ClInclude Include="defs.h" />
     <ClInclude Include="fleet_distribution.h" />
+    <ClInclude Include="ship_generator.h" />
     <ClInclude Include="strategies.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

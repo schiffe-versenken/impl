@@ -2,14 +2,21 @@
 
 #include <vector>
 #include <array>
+#include <random>
 
 extern int N;
 extern int D;
+extern int BLOCK_SIZE;
+extern int BLOCK_COUNT;
+extern int BLOCK_DIMENSION;
 extern int SHIPS;
 extern int CELLS;
+extern int DATA_SIZE;
 extern double FLEETS;
+extern std::mt19937 GENERATOR;
 
 typedef std::vector<int> Coordinate;
+using BlockCoordinate = std::vector<int>;
 
 struct Ship
 {
@@ -17,20 +24,12 @@ struct Ship
 	Coordinate max;
 };
 
-struct Tuple
-{
-    std::vector<int> coords;
-    std::vector<int> levels;
-};
+using StrategyBlock = std::vector<int>;
 
-using Fleet = std::vector<Ship>;
-
-using Strategy = std::vector<int>;
-
-void initValues(int n, int d);
+void initValues(int n, int d, int b, int seed);
 
 Coordinate emptyCoord();
 
-Fleet emptyFleet(int k);
+BlockCoordinate emptyBlockCoord();
 
-Strategy* emptyStrategy();
+StrategyBlock* emptyStrategyBlock();

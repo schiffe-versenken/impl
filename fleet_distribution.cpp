@@ -5,10 +5,11 @@ FleetDistribution::FleetDistribution()
 	binoms[0] = 0;
 	double value = 1;
 	double sum = 0;
-	for (int i = 1; i <= SHIPS; ++i) {
-		value = value * ((double)(SHIPS - i + 1) / (double)i);
+	double denominator = std::pow(2.0, DATA_SIZE) - 1 - 1;
+	for (int i = 1; i < DATA_SIZE; ++i) {
+		value = value * ((double)(DATA_SIZE - i + 1) / (double)i);
 		sum = sum + value;
-		binoms[i] = sum / FLEETS;
+		binoms[i] = sum / denominator;
 	}
 }
 
