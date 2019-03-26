@@ -5,16 +5,19 @@
 
 std::function<void(StrategyBlock*, BlockCoordinate)> generator;
 
-void testStrategy(StrategyBlock* b, BlockCoordinate c)
+uint64_t toIndex(Coordinate& c)
 {
-	for (int i = 0; i < b->size(); ++i) {
-		(*b)[i] = i + 1;
+	uint64_t index = 0;
+	for (int d = D - BLOCK_DIMENSION - 1; d >= 0; --d) {
+		uint64_t offset = c[(D - 1) - d] * DIMENSION_POWERS[d];
+		index += offset;
 	}
+	return index;
 }
 
 void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 {
-	std::uniform_int_distribution<> dis(1, CELLS);
+	std::uniform_int_distribution<u_int64_t> dis(1, CELLS);
 	for (int i = 0; i < BLOCK_SIZE; ++i) {
 		(*b)[i] = dis(GENERATOR);
 	}
@@ -115,7 +118,6 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 //}
 
 std::map<std::string, std::function<void (StrategyBlock*, BlockCoordinate)>> strategyNames = {
-	{ "test", &testStrategy },
 	{ "random", &randomStrategy } /*
 	{ "fullGrid", &fullGridStrategy },
 	{ "sparseGrid", &sparseGridStrategy}*/
@@ -130,23 +132,23 @@ BlockCoordinate generateBlock(StrategyBlock* b, int index)
 {
 	BlockCoordinate coord = emptyBlockCoord();
 	for (int d = BLOCK_DIMENSION - 1; d >= 0; --d) {
-		coord[d] = index / std::pow((double)N, d);
-		index = index % (int) std::pow((double)N, d);
+		coord[d] = index / static_cast<int>(DIMENSION_POWERS[d]);
+		index = index % static_cast<int>(DIMENSION_POWERS[d]);
 	}
 
 	generator(b, coord);
 	return coord;
 }
 
-int traverse(StrategyBlock& strat, Coordinate& c, Coordinate& max, int d)
+uint64_t traverse(StrategyBlock& strat, Coordinate& c, Coordinate& max, int d)
 {
 	int length = max[d] - c[d] + 1;
-	int min = CELLS;
+	uint64_t min = CELLS;
 	if (d == D - 1)
 	{
-		int index = toIndex(c);
+		uint64_t index = toIndex(c);
 		for (int i = 0; i < length; ++i) {
-			int value = strat[index + i];
+			uint64_t value = strat[index + i];
 			if (value < min) {
 				min = value;
 			}
@@ -155,7 +157,7 @@ int traverse(StrategyBlock& strat, Coordinate& c, Coordinate& max, int d)
 	else {
 		Coordinate cnew = c;
 		for (int i = 0; i < length; ++i) {
-			int value = traverse(strat, cnew, max, d + 1);
+			uint64_t value = traverse(strat, cnew, max, d + 1);
 			if (value < min) {
 				min = value;
 			}
@@ -177,7 +179,7 @@ bool inBlock(BlockCoordinate& c, Ship& s)
 	return true;
 }
 
-int findMin(BlockCoordinate& c, StrategyBlock& strat, Ship& s)
+uint64_t findMin(BlockCoordinate& c, StrategyBlock& strat, Ship& s)
 {
 	if (inBlock(c, s))
 	{

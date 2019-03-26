@@ -3,16 +3,18 @@
 
 int N = 0;
 int D = 0;
-int SHIPS = 0;
-int CELLS = 0;
+u_int64_t SHIPS = 0;
+u_int64_t CELLS = 0;
 
 int BLOCK_DIMENSION = 0;
 int BLOCK_COUNT = 0;
-int BLOCK_SIZE = 0;
+uint64_t BLOCK_SIZE = 0;
 
-int DATA_SIZE = 0;
+uint64_t DATA_SIZE = 0;
 
 std::mt19937 GENERATOR;
+
+std::vector<uint64_t> DIMENSION_POWERS;
 
 double FLEETS = 0.0;
 
@@ -29,9 +31,15 @@ void initValues(int n, int d, int b, int seed)
 	BLOCK_SIZE = std::pow((double)N, D - BLOCK_DIMENSION);
 	BLOCK_COUNT = CELLS / BLOCK_SIZE;
 
-	DATA_SIZE = sqrt(CELLS);
+	DATA_SIZE = BLOCK_SIZE;
 
 	GENERATOR = std::mt19937(seed);
+
+	DIMENSION_POWERS = std::vector<uint64_t>(D);
+	for (int i = 0; i < d; i++)
+	{
+		DIMENSION_POWERS[i] = std::pow((double)N, i);
+	}
 }
 
 Coordinate emptyCoord()

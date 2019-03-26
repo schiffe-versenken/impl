@@ -8,8 +8,9 @@ int main(int argc, char **argv)
 {
 	int c;
 	int n;
-	int r;
 	int d;
+	int time;
+	int threads;
 	int seed;
 	int blocks;
 	std::string stratname;
@@ -20,16 +21,17 @@ int main(int argc, char **argv)
 		{
 		{ "size",  required_argument, 0, 'n' },
 		{ "dimensions",  required_argument, 0, 'd' },
-		{ "rounds",    required_argument, 0, 'r' },
 		{ "strategy",    required_argument, 0, 's' },
 		{ "seed",    required_argument, 0, 'x' },
-		{ "blocks",    required_argument, 0, 'b' },
+		{ "block-dimensions",    required_argument, 0, 'b' },
+		{ "time",    required_argument, 0, 't' },
+		{ "threads",    required_argument, 0, 'm' },
 		{ 0, 0, 0, 0 }
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "n:d:r:s:x:b:",
+		c = getopt_long(argc, argv, "n:d:s:x:b:t:m:e:",
 			long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -52,10 +54,6 @@ int main(int argc, char **argv)
 			n = atoi(optarg);
 			break;
 
-		case 'r':
-			r = atoi(optarg);
-			break;
-
 		case 'd':
 			d = atoi(optarg);
 			break;
@@ -72,6 +70,14 @@ int main(int argc, char **argv)
 			stratname = optarg;
 			break;
 
+		case 't':
+			time = atoi(optarg);
+			break;
+
+		case 'm':
+			threads = atoi(optarg);
+			break;
+
 		case '?':
 			/* getopt_long already printed an error message. */
 			break;
@@ -83,8 +89,8 @@ int main(int argc, char **argv)
 
 	initValues(n, d, blocks, seed);
 	createStrategy(stratname);
-	double e = calcExpectedValue(r);
-	std::cout << e << '\n';
+	PointMean e = calcExpectedValueMT(threads, time * 1000);
+	std::cout << e.mean << '\n';
 
 	exit(0);
 }

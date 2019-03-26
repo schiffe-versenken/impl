@@ -2,6 +2,11 @@
 
 #include "defs.h"
 
-int toIndex(Coordinate& c);
 
-double calcExpectedValue(int rounds);
+struct PointMean
+{
+	double mean;
+	uint64_t n;
+};
+
+PointMean calcExpectedValueMT(int threads, int time);

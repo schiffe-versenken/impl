@@ -13,7 +13,7 @@ FleetDistribution::FleetDistribution()
 	}
 }
 
-int  FleetDistribution::binarySearch(int start, int end, double val)
+uint64_t FleetDistribution::binarySearch(uint64_t start, uint64_t end, double val)
 {
 	if (start + 1 == end)
 	{
