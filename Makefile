@@ -1,5 +1,5 @@
 TARGET = sv
-LIBS = -lm
+LIBS = -lm -lpthread
 CC = g++
 CFLAGS = -g -Wall -std=c++14
 
