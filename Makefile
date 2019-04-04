@@ -1,7 +1,7 @@
 TARGET = sv
 LIBS = -lm
 CC = g++
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -std=c++14
 
 .PHONY: default all clean
 
