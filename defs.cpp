@@ -6,7 +6,8 @@ int D = 0;
 u_int64_t SHIPS = 0;
 u_int64_t CELLS = 0;
 
-int BLOCK_DIMENSION = 0;
+int BLOCK_DIMENSIONS = 0;
+int BLOCK_DIMENSION_CUTOFF = 0;
 int BLOCK_COUNT = 0;
 uint64_t BLOCK_SIZE = 0;
 
@@ -27,8 +28,9 @@ void initValues(int n, int d, int b, int seed)
 	CELLS = std::pow((double) N, D);
 	FLEETS = std::pow((double)2, (double)SHIPS) - 1;
 
-	BLOCK_DIMENSION = b;
-	BLOCK_SIZE = std::pow((double)N, D - BLOCK_DIMENSION);
+	BLOCK_DIMENSION_CUTOFF = b;
+	BLOCK_DIMENSIONS = D - BLOCK_DIMENSION_CUTOFF;
+	BLOCK_SIZE = std::pow((double)N, D - BLOCK_DIMENSION_CUTOFF);
 	BLOCK_COUNT = CELLS / BLOCK_SIZE;
 
 	DATA_SIZE = BLOCK_SIZE;
@@ -50,7 +52,7 @@ Coordinate emptyCoord()
 
 BlockCoordinate emptyBlockCoord()
 {
-	BlockCoordinate c = BlockCoordinate(BLOCK_DIMENSION, 0);
+	BlockCoordinate c = BlockCoordinate(BLOCK_DIMENSION_CUTOFF, 0);
 	return c;
 }
 

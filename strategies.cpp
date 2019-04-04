@@ -2,13 +2,14 @@
 #include <random>
 #include <map>
 #include <functional>
+#include <iostream>
 
 std::function<void(StrategyBlock*, BlockCoordinate)> generator;
 
 uint64_t toIndex(Coordinate& c)
 {
 	uint64_t index = 0;
-	for (int d = D - BLOCK_DIMENSION - 1; d >= 0; --d) {
+	for (int d = D - BLOCK_DIMENSION_CUTOFF - 1; d >= 0; --d) {
 		uint64_t offset = c[(D - 1) - d] * DIMENSION_POWERS[d];
 		index += offset;
 	}
@@ -131,7 +132,7 @@ void createStrategy(std::string& name)
 BlockCoordinate generateBlock(StrategyBlock* b, int index)
 {
 	BlockCoordinate coord = emptyBlockCoord();
-	for (int d = BLOCK_DIMENSION - 1; d >= 0; --d) {
+	for (int d = BLOCK_DIMENSION_CUTOFF - 1; d >= 0; --d) {
 		coord[d] = index / static_cast<int>(DIMENSION_POWERS[d]);
 		index = index % static_cast<int>(DIMENSION_POWERS[d]);
 	}
@@ -140,37 +141,72 @@ BlockCoordinate generateBlock(StrategyBlock* b, int index)
 	return coord;
 }
 
-uint64_t traverse(StrategyBlock& strat, Coordinate& c, Coordinate& max, int d)
+uint64_t traverse(StrategyBlock& strat, Coordinate& c1, Coordinate& c2)
 {
-	int length = max[d] - c[d] + 1;
+	std::vector<bool> directions = std::vector<bool>(BLOCK_DIMENSIONS, true);
+	Coordinate c = c1;
 	uint64_t min = CELLS;
-	if (d == D - 1)
+	while (c[BLOCK_DIMENSION_CUTOFF] != c2[BLOCK_DIMENSION_CUTOFF])
 	{
 		uint64_t index = toIndex(c);
-		for (int i = 0; i < length; ++i) {
-			uint64_t value = strat[index + i];
-			if (value < min) {
-				min = value;
+		if (directions[BLOCK_DIMENSIONS - 1])
+		{
+			for (int i = c1[D - 1]; i <= c2[D - 1]; ++i) {
+				uint64_t value = strat[index + i];
+				if (value < min) {
+					min = value;
+				}
 			}
+			c[D - 1] = c2[D - 1];
+		}
+		else
+		{
+			for (int i = c2[D - 1]; i >= c1[D - 1]; --i) {
+				uint64_t value = strat[index + i];
+				if (value < min) {
+					min = value;
+				}
+			}
+			c[D - 1] = c1[D - 1];
+		}
+
+		for (int i = BLOCK_DIMENSIONS - 1; i >= 0; --i) {
+			int cIndex = i + BLOCK_DIMENSION_CUTOFF;
+			if (directions[i]) {
+				if ((c[cIndex] + 1) > c2[cIndex])
+				{
+					directions[i] = !directions[i];
+					continue;
+				}
+			}
+			else
+			{
+				if ((c[cIndex] - 1) < c2[cIndex])
+				{
+					directions[i] = !directions[i];
+					continue;
+				}
+			}
+
+			if (directions[i]) {
+				c[cIndex]++;
+			}
+			else
+			{
+				c[cIndex]--;
+			}
+
+			break;
 		}
 	}
-	else {
-		Coordinate cnew = c;
-		for (int i = 0; i < length; ++i) {
-			uint64_t value = traverse(strat, cnew, max, d + 1);
-			if (value < min) {
-				min = value;
-			}
-			cnew[d] = cnew[d] + 1;
-		}
-	}
+
 	return min;
 
 }
 
 bool inBlock(BlockCoordinate& c, Ship& s)
 {
-	for (int d = 0; d < BLOCK_DIMENSION; ++d) {
+	for (int d = 0; d < BLOCK_DIMENSION_CUTOFF; ++d) {
 		if ((s.min[d] < c[d] && s.max[d] < c[d]) || (s.min[d] > c[d] && s.max[d] > c[d]))
 		{
 			return false;
@@ -183,12 +219,13 @@ uint64_t findMin(BlockCoordinate& c, StrategyBlock& strat, Ship& s)
 {
 	if (inBlock(c, s))
 	{
-		Coordinate min = s.min, max = s.max;
-		for (int d = 0; d < BLOCK_DIMENSION; ++d) {
-			min[d] = c[d];
-			max[d] = c[d];
-		}
-		return traverse(strat, min, max, BLOCK_DIMENSION);
+		//We don't need this
+		//Coordinate min = s.min, max = s.max;
+		//for (int d = 0; d < BLOCK_DIMENSION_CUTOFF; ++d) {
+		//	min[d] = c[d];
+		//	max[d] = c[d];
+		//}
+		return traverse(strat, s.min, s.max);
 	}
-	return -1;
+	return 0;
 }

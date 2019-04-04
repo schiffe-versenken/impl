@@ -86,6 +86,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RelaxIEEE>true</RelaxIEEE>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread</LibraryDependencies>
@@ -102,6 +106,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RelaxIEEE>true</RelaxIEEE>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread</LibraryDependencies>
@@ -118,6 +126,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RelaxIEEE>true</RelaxIEEE>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread</LibraryDependencies>
