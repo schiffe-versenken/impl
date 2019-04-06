@@ -6,4 +6,4 @@ void createStrategy(std::string& name);
 
 BlockCoordinate generateBlock(StrategyBlock* b, int index);
 
-uint64_t findMin(BlockCoordinate& c, StrategyBlock& strat, Ship& s);
+void findMins(int blockIndex, StrategyBlock* strat, std::vector<Ship>& ships, std::vector<uint64_t>& turns);

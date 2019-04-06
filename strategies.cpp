@@ -141,12 +141,15 @@ BlockCoordinate generateBlock(StrategyBlock* b, int index)
 	return coord;
 }
 
-uint64_t traverse(StrategyBlock& strat, Coordinate& c1, Coordinate& c2)
+uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinate& c, Coordinate& c1, Coordinate& c2)
 {
-	std::vector<bool> directions = std::vector<bool>(BLOCK_DIMENSIONS, true);
-	Coordinate c = c1;
+	for (int i = BLOCK_DIMENSIONS - 1; i >= 0; --i) {
+		directions[i] = true;
+	}
+	c = c1;
 	uint64_t min = CELLS;
-	while (c[BLOCK_DIMENSION_CUTOFF] != c2[BLOCK_DIMENSION_CUTOFF])
+
+	while (directions[0])
 	{
 		uint64_t index = toIndex(c);
 		if (directions[BLOCK_DIMENSIONS - 1])
@@ -215,17 +218,26 @@ bool inBlock(BlockCoordinate& c, Ship& s)
 	return true;
 }
 
-uint64_t findMin(BlockCoordinate& c, StrategyBlock& strat, Ship& s)
+void findMins(int blockIndex, StrategyBlock* strat, std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
-	if (inBlock(c, s))
-	{
-		//We don't need this
-		//Coordinate min = s.min, max = s.max;
-		//for (int d = 0; d < BLOCK_DIMENSION_CUTOFF; ++d) {
-		//	min[d] = c[d];
-		//	max[d] = c[d];
-		//}
-		return traverse(strat, s.min, s.max);
+	std::vector<bool> workDirections = std::vector<bool>(BLOCK_DIMENSIONS, true);
+	Coordinate workCoord = emptyCoord();
+	BlockCoordinate c = generateBlock(strat, blockIndex);
+	Coordinate min, max = emptyCoord();
+	for (uint32_t i = 0; i < ships.size(); ++i) {
+		Ship& ship = ships[i];
+		if (inBlock(c, ship))
+		{
+			min = ship.min, max = ship.max;
+			for (int d = 0; d < BLOCK_DIMENSION_CUTOFF; ++d) {
+				min[d] = c[d];
+				max[d] = c[d];
+			}
+			uint64_t minValue = traverse(*strat, workDirections, workCoord, min, max);
+			if (minValue < turns[i])
+			{
+				turns[i] = minValue;
+			}
+		}
 	}
-	return 0;
 }

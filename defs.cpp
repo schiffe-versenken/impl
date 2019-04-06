@@ -12,6 +12,7 @@ int BLOCK_COUNT = 0;
 uint64_t BLOCK_SIZE = 0;
 
 uint64_t DATA_SIZE = 0;
+uint64_t SHIPS_SIZE = 0;
 
 std::mt19937 GENERATOR;
 
@@ -19,7 +20,7 @@ std::vector<uint64_t> DIMENSION_POWERS;
 
 double FLEETS = 0.0;
 
-void initValues(int n, int d, int b, int seed)
+void initValues(int n, int d, int ds, int s, int seed)
 {
 	N = n;
 	D = d;
@@ -28,12 +29,13 @@ void initValues(int n, int d, int b, int seed)
 	CELLS = std::pow((double) N, D);
 	FLEETS = std::pow((double)2, (double)SHIPS) - 1;
 
-	BLOCK_DIMENSION_CUTOFF = b;
-	BLOCK_DIMENSIONS = D - BLOCK_DIMENSION_CUTOFF;
-	BLOCK_SIZE = std::pow((double)N, D - BLOCK_DIMENSION_CUTOFF);
+	BLOCK_DIMENSION_CUTOFF = D - ds;
+	BLOCK_DIMENSIONS = ds;
+	BLOCK_SIZE = std::pow((double)N, ds);
 	BLOCK_COUNT = CELLS / BLOCK_SIZE;
 
 	DATA_SIZE = BLOCK_SIZE;
+	SHIPS_SIZE = std::pow((double)N, s);
 
 	GENERATOR = std::mt19937(seed);
 

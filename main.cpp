@@ -12,7 +12,8 @@ int main(int argc, char **argv)
 	int time;
 	int threads;
 	int seed;
-	int blocks;
+	int ds;
+	int s;
 	std::string stratname;
 
 	while (1)
@@ -23,7 +24,8 @@ int main(int argc, char **argv)
 		{ "dimensions",  required_argument, 0, 'd' },
 		{ "strategy",    required_argument, 0, 's' },
 		{ "seed",    required_argument, 0, 'x' },
-		{ "block-dimensions",    required_argument, 0, 'b' },
+		{ "data-size",    required_argument, 0, 'b' },
+		{ "ships-size",    required_argument, 0, 'c' },
 		{ "time",    required_argument, 0, 't' },
 		{ "threads",    required_argument, 0, 'm' },
 		{ 0, 0, 0, 0 }
@@ -31,7 +33,7 @@ int main(int argc, char **argv)
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "n:d:s:x:b:t:m:e:",
+		c = getopt_long(argc, argv, "n:d:s:x:b:c:t:m:",
 			long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -63,7 +65,11 @@ int main(int argc, char **argv)
 			break;
 
 		case 'b':
-			blocks = atoi(optarg);
+			ds = atoi(optarg);
+			break;
+
+		case 'c':
+			s = atoi(optarg);
 			break;
 
 		case 's':
@@ -87,7 +93,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	initValues(n, d, blocks, seed);
+	initValues(n, d, ds, s, seed);
 	createStrategy(stratname);
 	PointMean e = calcExpectedValueMT(threads, time * 1000);
 	std::cout << e.mean << '\n';

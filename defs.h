@@ -13,6 +13,7 @@ extern int BLOCK_DIMENSIONS;
 extern u_int64_t SHIPS;
 extern u_int64_t CELLS;
 extern uint64_t DATA_SIZE;
+extern uint64_t SHIPS_SIZE;
 extern double FLEETS;
 extern std::mt19937 GENERATOR;
 extern std::vector<uint64_t> DIMENSION_POWERS;
@@ -28,7 +29,7 @@ struct Ship
 
 using StrategyBlock = std::vector<u_int64_t>;
 
-void initValues(int n, int d, int b, int seed);
+void initValues(int n, int d, int ds, int s, int seed);
 
 Coordinate emptyCoord();
 
