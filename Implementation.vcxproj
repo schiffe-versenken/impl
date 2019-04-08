@@ -63,14 +63,12 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="defs.cpp" />
-    <ClCompile Include="fleet_distribution.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="strategies.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defs.h" />
-    <ClInclude Include="fleet_distribution.h" />
     <ClInclude Include="ship_generator.h" />
     <ClInclude Include="strategies.h" />
     <ClInclude Include="utils.h" />

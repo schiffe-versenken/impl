@@ -1,5 +1,4 @@
 #include "utils.h"
-#include "fleet_distribution.h"
 #include <climits>
 #include "strategies.h"
 #include "ship_generator.h"
@@ -7,6 +6,8 @@
 #include <chrono>
 #include <thread>
 #include <gmp.h>
+#include <iostream>
+#include <fstream>
 
 void calcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
@@ -61,6 +62,13 @@ void calcExpectedValue(int id, int time, std::vector<uint64_t>* values, int* val
 
 void outputData(std::vector<uint64_t>& values, int n)
 {
+	std::ofstream shipFile;
+
+	char buff[100];
+	snprintf(buff, sizeof(buff), "ships-%u-%u.txt", N, D);
+	std::string buffAsStdStr = buff;
+	shipFile.open(buffAsStdStr);
+
 	std::string value = "1.0@-" + std::to_string(n);
 	mpf_t w;
 	mpf_init(w);
@@ -85,14 +93,35 @@ void outputData(std::vector<uint64_t>& values, int n)
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
+		shipFile << turns << "," << (static_cast<double>(values[i]) / static_cast<double>(SHIPS)) << "," << mpf_get_d(temp) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
+	shipFile.close();
 
 	double e = mpf_get_d(m);
 
+
 	std::cout << "expected turn count: " << e << std::endl;
 	std::cout << "ship sample count: " << n << std::endl;
+	std::cout << "ship coverage: " << (static_cast<double>(n) / static_cast<double>(SHIPS)) * 100.0 << "%" <<std::endl;
+
+	int fleetsExp = n;
+	std::string tmpValue = "1.0@" + std::to_string(fleetsExp);
+	mpf_set_str(temp, tmpValue.c_str(), -2);
+	mpf_sub_ui(temp, temp, 1);
+	mp_exp_t exp;
+	tmpValue = mpf_get_str(nullptr, &exp, 10, 6, temp);
+	tmpValue.insert(1, ".");
+	std::cout << "fleet sample count: " << tmpValue << "e" << std::to_string(exp) << std::endl;
+
+	int allFleetsExp = SHIPS;
+	tmpValue = "1.0@" + std::to_string(fleetsExp - allFleetsExp);
+	mpf_set_str(temp, tmpValue.c_str(), -2);
+	mpf_mul_ui(temp, temp, 100);
+	tmpValue = mpf_get_str(nullptr, &exp, 10, 6, temp);
+	tmpValue.insert(1, ".");
+	std::cout << "fleet coverage: " << tmpValue << "e" << std::to_string(exp) << "%" <<std::endl;
 }
 
 PointMean calcExpectedValueMT(int threads, int time)
