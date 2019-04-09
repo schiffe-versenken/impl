@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils.h"
+#include "defs.h"
 
 void createStrategy(std::string& name);
 

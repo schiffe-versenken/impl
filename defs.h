@@ -19,7 +19,6 @@ extern std::mt19937 GENERATOR;
 extern std::vector<uint64_t> DIMENSION_POWERS;
 
 typedef std::vector<int> Coordinate;
-typedef std::vector<int> Index;
 using BlockCoordinate = std::vector<int>;
 
 struct Ship

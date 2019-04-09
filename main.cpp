@@ -95,8 +95,6 @@ int main(int argc, char **argv)
 
 	initValues(n, d, ds, s, seed);
 	createStrategy(stratname);
-	PointMean e = calcExpectedValueMT(threads, time * 1000);
-	std::cout << e.mean << '\n';
-
+	calcExpectedValueMT(threads, time * 1000);
 	exit(0);
 }

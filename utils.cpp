@@ -62,12 +62,12 @@ void calcExpectedValue(int id, int time, std::vector<uint64_t>* values, int* val
 
 void outputData(std::vector<uint64_t>& values, int n)
 {
-	std::ofstream shipFile;
+	std::ofstream resultsFile;
 
 	char buff[100];
-	snprintf(buff, sizeof(buff), "ships-%u-%u.txt", N, D);
+	snprintf(buff, sizeof(buff), "results-%u-%u.txt", N, D);
 	std::string buffAsStdStr = buff;
-	shipFile.open(buffAsStdStr);
+	resultsFile.open(buffAsStdStr);
 
 	std::string value = "1.0@-" + std::to_string(n);
 	mpf_t w;
@@ -93,11 +93,11 @@ void outputData(std::vector<uint64_t>& values, int n)
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
-		shipFile << turns << "," << (static_cast<double>(values[i]) / static_cast<double>(SHIPS)) << "," << mpf_get_d(temp) << " ";
+		resultsFile << turns << "," << (static_cast<double>(values[i]) / static_cast<double>(SHIPS)) << "," << mpf_get_d(temp) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
-	shipFile.close();
+	resultsFile.close();
 
 	double e = mpf_get_d(m);
 
@@ -124,10 +124,9 @@ void outputData(std::vector<uint64_t>& values, int n)
 	std::cout << "fleet coverage: " << tmpValue << "e" << std::to_string(exp) << "%" <<std::endl;
 }
 
-PointMean calcExpectedValueMT(int threads, int time)
+void calcExpectedValueMT(int threads, int time)
 {
 	std::thread t[threads];
-	PointMean m[threads];
 
 	std::vector<uint64_t> values = std::vector<uint64_t>(DATA_SIZE, 0);
 	int n = 0;
@@ -141,13 +140,4 @@ PointMean calcExpectedValueMT(int threads, int time)
 	}
 
 	outputData(values, n);
-
-	PointMean mean = {};
-	for (int i = 0; i < threads; ++i)
-	{
-		mean.mean += m[i].mean;
-		mean.n += m[i].n;
-	}
-	mean.mean /= threads;
-	return mean;
 }
