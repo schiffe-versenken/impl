@@ -92,6 +92,10 @@ void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 			i = i / N;
 		}
 
+		for (int i = 0; i < BLOCK_DIMENSION_CUTOFF; i++){
+			currentCell[i] = c[i];
+		}
+
 		int indexOfMax = 0;
 		int max = 0;
 		for (int j = 0; j < D; j++) {
