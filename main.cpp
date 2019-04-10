@@ -9,7 +9,6 @@ int main(int argc, char **argv)
 	int c;
 	int n;
 	int d;
-	int time;
 	int threads;
 	int seed;
 	int ds;
@@ -26,14 +25,13 @@ int main(int argc, char **argv)
 		{ "seed",    required_argument, 0, 'x' },
 		{ "data-size",    required_argument, 0, 'b' },
 		{ "ships-size",    required_argument, 0, 'c' },
-		{ "time",    required_argument, 0, 't' },
-		{ "threads",    required_argument, 0, 'm' },
+		{ "threads",    required_argument, 0, 't' },
 		{ 0, 0, 0, 0 }
 		};
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "n:d:s:x:b:c:t:m:",
+		c = getopt_long(argc, argv, "n:d:s:x:b:c:t:",
 			long_options, &option_index);
 
 		/* Detect the end of the options. */
@@ -74,10 +72,6 @@ int main(int argc, char **argv)
 
 		case 's':
 			stratname = optarg;
-			break;
-
-		case 't':
-			time = atoi(optarg);
 			break;
 
 		case 'm':

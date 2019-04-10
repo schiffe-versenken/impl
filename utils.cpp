@@ -37,25 +37,18 @@ void genShipsAndCalcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns
 	calcTurns(ships, turns);
 }
 
-void calcExpectedValue(int id, int time, std::vector<uint64_t>* values, int* valueCount)
+void calcExpectedValue(int id, std::vector<uint64_t>* values, int* valueCount)
 {
 	std::vector<Ship> ships = std::vector<Ship>(SHIPS_SIZE, Ship {emptyCoord(), emptyCoord()});
 	std::vector<uint64_t> turns = std::vector<uint64_t>(SHIPS_SIZE, CELLS);
 
-	auto start = std::chrono::system_clock::now().time_since_epoch().count();
-	auto end = start + time;
-
-	int n = 0;
-
-	for (; std::chrono::system_clock::now().time_since_epoch().count() <= end; n += SHIPS_SIZE) {
-		genShipsAndCalcTurns(ships, turns);
-		for (int i = 0; i < SHIPS_SIZE; ++i)
-		{
-			int clampedIndex = std::round((static_cast<double>(turns[i]) / static_cast<double>(CELLS)) * static_cast<double>(DATA_SIZE));
-			(*values)[clampedIndex]++;
-		}
+	genShipsAndCalcTurns(ships, turns);
+	for (int i = 0; i < SHIPS_SIZE; ++i)
+	{
+		int clampedIndex = std::round((static_cast<double>(turns[i]) / static_cast<double>(CELLS)) * static_cast<double>(DATA_SIZE));
+		(*values)[clampedIndex]++;
 	}
-	*valueCount += n;
+	*valueCount += SHIPS_SIZE;
 
 	std::cout << "thread " << id << " finished \n";
 }
@@ -124,7 +117,7 @@ void outputData(std::vector<uint64_t>& values, int n)
 	std::cout << "fleet coverage: " << tmpValue << "e" << std::to_string(exp) << "%" <<std::endl;
 }
 
-void calcExpectedValueMT(int threads, int time)
+void calcExpectedValueMT(int threads)
 {
 	std::thread t[threads];
 
@@ -132,7 +125,7 @@ void calcExpectedValueMT(int threads, int time)
 	int n = 0;
 	for(int i=0; i < threads;++i)
 	{
-		t[i] = std::thread(calcExpectedValue, i, time, &values, &n);
+		t[i] = std::thread(calcExpectedValue, i, &values, &n);
 	}
 	for (int i = 0; i < threads; ++i)
 	{
