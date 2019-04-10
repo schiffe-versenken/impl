@@ -89,6 +89,6 @@ int main(int argc, char **argv)
 
 	initValues(n, d, ds, s, seed);
 	createStrategy(stratname);
-	calcExpectedValueMT(threads, time * 1000);
+	calcExpectedValueMT(threads);
 	exit(0);
 }
