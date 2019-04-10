@@ -13,3 +13,7 @@ Available strategies:
 
 ## Example
 `./sv -n 10 -d 8 -t 10 -s random -b 6 -c 7 -t 1 -x 1234`
+
+# Output
+
+The program outputs a file called `results-<n>-<d>.txt` which contains data for two plots. Each data point has the format `x,y_1,y_2`.
