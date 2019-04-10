@@ -80,15 +80,18 @@ void outputData(std::vector<uint64_t>& values, int n)
 	mpf_init(m);
 	mpf_set_d(m, 0.0);
 
+	uint64_t sum = 0;
+
 	for (int i = 0; i < DATA_SIZE; ++i)
 	{
+		sum += values[i];
 		uint64_t turns = i * (CELLS / DATA_SIZE);
 		std::string tmpValue = "1.0@" + std::to_string(values[i]);
 		mpf_set_str(temp, tmpValue.c_str(), -2);
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
-		resultsFile << turns << "," << (static_cast<double>(values[i]) / static_cast<double>(SHIPS)) << "," << mpf_get_d(newW) << " ";
+		resultsFile << turns << "," << (static_cast<double>(sum) / static_cast<double>(SHIPS)) << "," << mpf_get_d(newW) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
