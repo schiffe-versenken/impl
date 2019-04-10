@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 			stratname = optarg;
 			break;
 
-		case 'm':
+		case 't':
 			threads = atoi(optarg);
 			break;
 
@@ -89,6 +89,6 @@ int main(int argc, char **argv)
 
 	initValues(n, d, ds, s, seed);
 	createStrategy(stratname);
-	calcExpectedValueMT(threads, time * 1000);
+	calcExpectedValueMT(threads);
 	exit(0);
 }
