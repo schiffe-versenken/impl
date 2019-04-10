@@ -62,6 +62,8 @@ void outputData(std::vector<uint64_t>& values, int n)
 	std::string buffAsStdStr = buff;
 	resultsFile.open(buffAsStdStr);
 
+	//Magic
+
 	std::string value = "1.0@-" + std::to_string(n);
 	mpf_t w;
 	mpf_init(w);
@@ -86,7 +88,7 @@ void outputData(std::vector<uint64_t>& values, int n)
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
-		resultsFile << turns << "," << (static_cast<double>(values[i]) / static_cast<double>(SHIPS)) << "," << mpf_get_d(temp) << " ";
+		resultsFile << turns << "," << (static_cast<double>(values[i]) / static_cast<double>(SHIPS)) << "," << mpf_get_d(newW) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
