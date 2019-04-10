@@ -60,6 +60,10 @@ void outputData(std::vector<uint64_t>& values, int n)
 	char buff[100];
 	snprintf(buff, sizeof(buff), "results-%u-%u.txt", N, D);
 	std::string buffAsStdStr = buff;
+	if (std::ifstream(buffAsStdStr).good())
+	{
+		std::remove(buffAsStdStr.c_str());
+	}
 	resultsFile.open(buffAsStdStr);
 
 	//Magic
