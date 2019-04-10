@@ -25,63 +25,95 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 
 void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 {
-	int L = 0;
-	std::vector<int> K(N, 0);
-	K[0] = std::floor((double)N / 2.0);
+	//int L = 0;
+	//std::vector<int> K(N, 0);
+	//K[0] = std::floor((double)N / 2.0);
 
-	int maxCoord = K[0];
+	//int maxCoord = K[0];
 
-	Coordinate max = Coordinate(BLOCK_DIMENSIONS, maxCoord);
-	Coordinate lastShot(BLOCK_DIMENSIONS, maxCoord);
-	for (int i = 0; i < BLOCK_DIMENSION_CUTOFF; i++)
-	{
-		max[i] = c[i];
-		lastShot[i] = c[i];
-	}
+	//Coordinate max = Coordinate(BLOCK_DIMENSIONS, maxCoord);
+	//Coordinate lastShot(BLOCK_DIMENSIONS, maxCoord);
+	//for (int i = 0; i < BLOCK_DIMENSION_CUTOFF; i++)
+	//{
+	//	max[i] = c[i];
+	//	lastShot[i] = c[i];
+	//}
 
-	std::vector<int> lastIndeces(BLOCK_DIMENSIONS, 0);
-	(*b)[0] = toIndex(lastShot);
+	//std::vector<int> lastIndeces(BLOCK_DIMENSIONS, 0);
+	//(*b)[0] = toIndex(lastShot);
 
+	//for (int i = 1; i < BLOCK_SIZE; ++i) {
+	//	//Adding new Coords if needed
+	//	if (lastShot == max) {
+	//		int power = (int)pow(2.0, L);
+	//		int offset = std::ceil((double)K[power - 1] / 2.0);
+	//		int next = std::pow(2.0, L + 1) - 1;
+	//		//Here pow(2.0,L+1)-1 instead of pow(2.0,L+1)-2,
+	//		//because last element of iterator is not added so we have to reference one element further
+	//		for (int i = 0; i < next - power + 1; ++i) {
+	//			int k = K[i + power];
+	//			K[next + i] = k - offset;
+	//			K[next + i] = k + offset;
+	//		}
+	//		L++;
+
+	//		maxCoord = K[(int)pow(2.0, L + 1) - 2];
+	//		max = Coordinate(BLOCK_DIMENSIONS, maxCoord);
+	//		for (int i = BLOCK_DIMENSION_CUTOFF; i < D; i++)
+	//		{
+	//			max[i] = c[i];
+	//		}
+	//	}
+
+	//	//calculating next Shot
+	//	int count = BLOCK_DIMENSIONS - 1;
+	//	while (true) {
+	//		int index = count + BLOCK_DIMENSION_CUTOFF;
+	//		if (lastShot[index] == maxCoord) {
+	//			lastShot[index] = K[0];
+	//			lastIndeces[count] = 0;
+	//			count--;
+	//		}
+	//		else
+	//		{
+	//			lastShot[index] = K[lastIndeces[count] + 1];
+	//			lastIndeces[count]++;
+	//			break;
+	//		}
+	//	}
+	//	(*b)[i] = toIndex(lastShot);
+	//}
+
+	Coordinate currentCell;
 	for (int i = 1; i < BLOCK_SIZE; ++i) {
-		//Adding new Coords if needed
-		if (lastShot == max) {
-			int power = (int)pow(2.0, L);
-			int offset = std::ceil((double)K[power - 1] / 2.0);
-			int next = std::pow(2.0, L + 1) - 1;
-			//Here pow(2.0,L+1)-1 instead of pow(2.0,L+1)-2,
-			//because last element of iterator is not added so we have to reference one element further
-			for (int i = 0; i < next - power + 1; ++i) {
-				int k = K[i + power];
-				K[next + i] = k - offset;
-				K[next + i] = k + offset;
-			}
-			L++;
+		currentCell = Coordinate(D, 1);
+		for (int j = D-1; i > 0; j--){
+			currentCell[j] = i % N;
+			i = i / N;
+		}
 
-			maxCoord = K[(int)pow(2.0, L + 1) - 2];
-			max = Coordinate(BLOCK_DIMENSIONS, maxCoord);
-			for (int i = BLOCK_DIMENSION_CUTOFF; i < D; i++)
-			{
-				max[i] = c[i];
+		int indexOfMax = 0;
+		int max = 0;
+		for (int j = 0; j < D; j++) {
+			for (int k = 0; k < N; k++) {
+				if (currentCell[j] == GRID_COORDINATES[k]) {
+					if (std::floor(std::log2((double)k + 1)) > max) {
+						max = std::log2((double)k + 1);
+						indexOfMax = j;
+					}
+					break;
+				}
 			}
 		}
 
-		//calculating next Shot
-		int count = BLOCK_DIMENSIONS - 1;
-		while (true) {
-			int index = count + BLOCK_DIMENSION_CUTOFF;
-			if (lastShot[index] == maxCoord) {
-				lastShot[index] = K[0];
-				lastIndeces[count] = 0;
-				count--;
-			}
-			else
-			{
-				lastShot[index] = K[lastIndeces[count] + 1];
-				lastIndeces[count]++;
-				break;
-			}
+		u_int64_t shotNumber = 0;
+		for (int j = 0; j < max; j++) {
+			shotNumber += MAX_LEVEL_SHOTS_FULL[j];
 		}
-		(*b)[i] = toIndex(lastShot);
+		shotNumber += LEVEL_SHOTS_FULL[max];
+		LEVEL_SHOTS_FULL[max]++;
+
+		(*b)[toIndex(currentCell)] = shotNumber;
 	}
 }
 
