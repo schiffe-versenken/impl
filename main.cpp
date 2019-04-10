@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 			stratname = optarg;
 			break;
 
-		case 'm':
+		case 't':
 			threads = atoi(optarg);
 			break;
 
