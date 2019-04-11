@@ -95,7 +95,7 @@ void outputData(std::vector<uint64_t>& values, int n)
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
-		resultsFile << turns << "," << (static_cast<double>(sum) / static_cast<double>(SHIPS)) << "," << mpf_get_d(newW) << " ";
+		resultsFile << turns << "," << (static_cast<double>(sum) / static_cast<double>(n)) << "," << mpf_get_d(newW) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
