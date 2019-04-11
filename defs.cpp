@@ -19,7 +19,7 @@ std::mt19937 GENERATOR;
 std::vector<uint64_t> DIMENSION_POWERS;
 
 std::vector<int> GRID_COORDINATES;
-std::vector<u_int64_t> LEVEL_SHOTS_FULL;
+thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL;
 std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
 
 double FLEETS = 0.0;
