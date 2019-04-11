@@ -128,6 +128,7 @@ void outputData(std::vector<uint64_t>& values, int n)
 
 void calcExpectedValueMT(int threads)
 {
+	auto start = std::chrono::system_clock::now();
 	std::thread t[threads];
 
 	std::vector<uint64_t> values = std::vector<uint64_t>(DATA_SIZE, 0);
@@ -142,4 +143,6 @@ void calcExpectedValueMT(int threads)
 	}
 
 	outputData(values, n);
+	auto time = std::chrono::duration_cast<std::chrono::seconds>((std::chrono::system_clock::now() - start)).count();
+	std::cout << "Elapsed time: " << time << " seconds\n";
 }
