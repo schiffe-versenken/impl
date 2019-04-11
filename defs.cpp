@@ -67,7 +67,7 @@ void initValues(int n, int d, int ds, int s, int seed)
 	std::vector<u_int64_t> numberGridPoints(std::ceil(std::log2((double)N)), 1);
 	int coordinatePoints = 1;
 	for (int i = 1 ; i < std::ceil(std::log2((double)N)); i++) {
-		coordinatePoints += std::pow(2, i);
+		coordinatePoints += std::pow((double)2, i);
 		numberGridPoints[i] = std::pow((double)coordinatePoints, N);
 		MAX_LEVEL_SHOTS_FULL[i] = numberGridPoints[i] - numberGridPoints[i - 1];
 	}
