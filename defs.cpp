@@ -50,16 +50,20 @@ void initValues(int n, int d, int ds, int s, int seed)
 	}
 
 	GRID_COORDINATES = std::vector<int>(N);
-	GRID_COORDINATES[0] = std::floor((double)N / 2.0);
-	for (int i = 1; i <= std::ceil(std::log2((double)N)); i++) {
+	GRID_COORDINATES[0] = std::ceil((double)N / 2.0);
+	for (int i = 1; i < std::ceil(std::log2((double)N)); i++) {
 		int power = (int)pow(2.0, i-1);
 		int offset = std::ceil((double)GRID_COORDINATES[power - 1] / 2.0);
 		int next = std::pow(2.0, i) - 1;
 		for (int j = 0; j < next - power +1; j++) {
 			int k = GRID_COORDINATES[power + j - 1];
-			//Hier ist irgendwas mit den Indizes falsch (out of bounds)
-			//GRID_COORDINATES[next + 2 * j] = k - offset;
-			//GRID_COORDINATES[next + 2 * j + 1] = k + offset;
+			if (k - offset != 0) {
+				GRID_COORDINATES[next + 2 * j] = k - offset;
+			}
+			else {
+				GRID_COORDINATES[next + 2 * j] = 1;
+			}
+			GRID_COORDINATES[next + 2 * j + 1] = k + offset;
 		}
 	}
 
