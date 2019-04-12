@@ -49,33 +49,33 @@ void initValues(int n, int d, int ds, int s, int seed)
 		DIMENSION_POWERS[i] = std::pow((double)N, i);
 	}
 
-	GRID_COORDINATES = std::vector<int>(N);
-	GRID_COORDINATES[0] = std::ceil((double)N / 2.0);
-	for (int i = 1; i < std::ceil(std::log2((double)N)); i++) {
-		int power = (int)pow(2.0, i-1);
-		int offset = std::ceil((double)GRID_COORDINATES[power - 1] / 2.0);
-		int next = std::pow(2.0, i) - 1;
-		for (int j = 0; j < next - power +1; j++) {
-			int k = GRID_COORDINATES[power + j - 1];
-			if (k - offset != 0) {
-				GRID_COORDINATES[next + 2 * j] = k - offset;
-			}
-			else {
-				GRID_COORDINATES[next + 2 * j] = 1;
-			}
-			GRID_COORDINATES[next + 2 * j + 1] = k + offset;
-		}
-	}
+	//GRID_COORDINATES = std::vector<int>(N);
+	//GRID_COORDINATES[0] = std::ceil((double)N / 2.0);
+	//for (int i = 1; i < std::ceil(std::log2((double)N)); i++) {
+	//	int power = (int)pow(2.0, i-1);
+	//	int offset = std::ceil((double)GRID_COORDINATES[power - 1] / 2.0);
+	//	int next = std::pow(2.0, i) - 1;
+	//	for (int j = 0; j < next - power +1; j++) {
+	//		int k = GRID_COORDINATES[power + j - 1];
+	//		if (k - offset != 0) {
+	//			GRID_COORDINATES[next + 2 * j] = k - offset;
+	//		}
+	//		else {
+	//			GRID_COORDINATES[next + 2 * j] = 1;
+	//		}
+	//		GRID_COORDINATES[next + 2 * j + 1] = k + offset;
+	//	}
+	//}
 
-	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
-	MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
-	std::vector<u_int64_t> numberGridPoints(std::ceil(std::log2((double)N)), 1);
-	int coordinatePoints = 1;
-	for (int i = 1 ; i < std::ceil(std::log2((double)N)); i++) {
-		coordinatePoints += std::pow((double)2, i);
-		numberGridPoints[i] = std::pow((double)coordinatePoints, N);
-		MAX_LEVEL_SHOTS_FULL[i] = numberGridPoints[i] - numberGridPoints[i - 1];
-	}
+	//LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
+	//MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
+	//std::vector<u_int64_t> numberGridPoints(std::ceil(std::log2((double)N)), 1);
+	//int coordinatePoints = 1;
+	//for (int i = 1 ; i < std::ceil(std::log2((double)N)); i++) {
+	//	coordinatePoints += std::pow((double)2, i);
+	//	numberGridPoints[i] = std::pow((double)coordinatePoints, N);
+	//	MAX_LEVEL_SHOTS_FULL[i] = numberGridPoints[i] - numberGridPoints[i - 1];
+	//}
 }
 
 Coordinate emptyCoord()
