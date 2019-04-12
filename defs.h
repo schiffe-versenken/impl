@@ -17,9 +17,10 @@ extern uint64_t SHIPS_SIZE;
 extern double FLEETS;
 extern std::mt19937 GENERATOR;
 extern std::vector<uint64_t> DIMENSION_POWERS;
-extern std::vector<int> GRID_COORDINATES;
-extern thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL;
-extern std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
+
+//extern std::vector<int> GRID_COORDINATES;
+//extern thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL;
+//extern std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
 
 typedef std::vector<int> Coordinate;
 using BlockCoordinate = std::vector<int>;
