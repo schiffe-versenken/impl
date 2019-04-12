@@ -214,7 +214,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 		uint64_t index = toIndex(c);
 		if (directions[BLOCK_DIMENSIONS - 1])
 		{
-			for (int i = c1[D - 1]; i <= c2[D - 1]; ++i) {
+			for (int i = 0; i <= c2[D - 1] - c1[D - 1]; ++i) {
 				uint64_t value = strat[index + i];
 				if (value < min) {
 					min = value;
@@ -224,7 +224,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 		}
 		else
 		{
-			for (int i = c2[D - 1]; i >= c1[D - 1]; --i) {
+			for (int i = c2[D - 1] - c1[D - 1]; i >= 0; --i) {
 				uint64_t value = strat[index + i];
 				if (value < min) {
 					min = value;

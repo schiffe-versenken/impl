@@ -57,8 +57,9 @@ void initValues(int n, int d, int ds, int s, int seed)
 		int next = std::pow(2.0, i) - 1;
 		for (int j = 0; j < next - power +1; j++) {
 			int k = GRID_COORDINATES[power + j - 1];
-			GRID_COORDINATES[next + 2 * j] = k - offset;
-			GRID_COORDINATES[next + 2 * j + 1] = k + offset;
+			//Hier ist irgendwas mit den Indizes falsch (out of bounds)
+			//GRID_COORDINATES[next + 2 * j] = k - offset;
+			//GRID_COORDINATES[next + 2 * j + 1] = k + offset;
 		}
 	}
 

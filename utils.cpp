@@ -12,7 +12,7 @@
 void calcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
 	static StrategyBlock* block = emptyStrategyBlock();
-	for (int b = 0; b <= BLOCK_COUNT; b++)
+	for (int b = 0; b < BLOCK_COUNT; b++)
 	{
 
 		auto start = std::chrono::system_clock::now();
@@ -45,7 +45,12 @@ void calcExpectedValue(int id, std::vector<uint64_t>* values, int* valueCount)
 	genShipsAndCalcTurns(ships, turns);
 	for (int i = 0; i < SHIPS_SIZE; ++i)
 	{
-		int clampedIndex = std::round((static_cast<double>(turns[i]) / static_cast<double>(CELLS)) * static_cast<double>(DATA_SIZE));
+		double shiftedTurns = static_cast<double>(turns[i]) - 1.0;
+		int clampedIndex = std::round(shiftedTurns / static_cast<double>(CELLS - 1) * static_cast<double>(DATA_SIZE - 1));
+		if (clampedIndex < 0 || clampedIndex >= DATA_SIZE)
+		{
+			(*values)[clampedIndex]++;
+		}
 		(*values)[clampedIndex]++;
 	}
 	*valueCount += SHIPS_SIZE;
@@ -86,16 +91,19 @@ void outputData(std::vector<uint64_t>& values, int n)
 
 	uint64_t sum = 0;
 
+	double eShips = 0;
 	for (int i = 0; i < DATA_SIZE; ++i)
 	{
 		sum += values[i];
-		uint64_t turns = i * (CELLS / DATA_SIZE);
+		uint64_t turns = (i +1) * (CELLS / DATA_SIZE);
 		std::string tmpValue = "1.0@" + std::to_string(values[i]);
 		mpf_set_str(temp, tmpValue.c_str(), -2);
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
-		resultsFile << turns << "," << (static_cast<double>(sum) / static_cast<double>(n)) << "," << mpf_get_d(newW) << " ";
+		double pShips = values[i] / static_cast<double>(n);
+		eShips += pShips * turns;
+		resultsFile << turns << "," << pShips << "," << mpf_get_d(newW) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
@@ -104,9 +112,11 @@ void outputData(std::vector<uint64_t>& values, int n)
 	double e = mpf_get_d(m);
 
 
-	std::cout << "expected turn count: " << e << std::endl;
+	std::cout << "expected ship turn count: " << eShips << std::endl;
 	std::cout << "ship sample count: " << n << std::endl;
 	std::cout << "ship coverage: " << (static_cast<double>(n) / static_cast<double>(SHIPS)) * 100.0 << "%" <<std::endl;
+
+	std::cout << "expected fleet turn count: " << e << std::endl;
 
 	int fleetsExp = n;
 	std::string tmpValue = "1.0@" + std::to_string(fleetsExp);
