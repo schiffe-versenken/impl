@@ -85,7 +85,7 @@ void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 	//}
 
 	Coordinate currentCell;
-	for (int i = 1; i < BLOCK_SIZE; ++i) {
+	for (int i = 1; i <= BLOCK_SIZE; ++i) {
 		currentCell = Coordinate(D, 1);
 		for (int j = D-1; i > 0; j--){
 			currentCell[j] = i % N;

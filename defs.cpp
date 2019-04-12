@@ -62,7 +62,7 @@ void initValues(int n, int d, int ds, int s, int seed)
 		}
 	}
 
-	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 0);
+	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
 	MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
 	std::vector<u_int64_t> numberGridPoints(std::ceil(std::log2((double)N)), 1);
 	int coordinatePoints = 1;
