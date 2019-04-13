@@ -225,7 +225,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 		else
 		{
 			for (int i = c2[D - 1] - c1[D - 1]; i >= 0; --i) {
-				uint64_t value = strat[index + i];
+				uint64_t value = strat[index - i];
 				if (value < min) {
 					min = value;
 				}
