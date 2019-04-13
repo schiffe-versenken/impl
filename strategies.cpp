@@ -25,7 +25,7 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 
 void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 {
-	/*Coordinate currentCell;
+	Coordinate currentCell;
 	u_int64_t shotNumber;
 	for (int i = 0; i < BLOCK_SIZE; ++i) {
 		currentCell = Coordinate(D, 0);
@@ -41,7 +41,7 @@ void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 		
 		int max = 0;
 		for (int j = 0; j < D; j++) {
-			for (int k = 0; k < N; k++) {
+			for (int k = 0; k < CAP; k++) {
 				if (currentCell[j]+1 == GRID_COORDINATES[k]) {
 					if (std::floor(std::log2((double)k + 1)) > max) {
 						max = std::log2((double)k + 1);
@@ -58,7 +58,7 @@ void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 		LEVEL_SHOTS_FULL[max]++;
 
 		(*b)[toIndex(currentCell)] = shotNumber;
-	}*/
+	}
 }
 
 void sparseGridStrategy(StrategyBlock* b, BlockCoordinate c) {

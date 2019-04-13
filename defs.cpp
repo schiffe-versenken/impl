@@ -18,11 +18,27 @@ std::mt19937 GENERATOR;
 
 std::vector<uint64_t> DIMENSION_POWERS;
 
-//std::vector<int> GRID_COORDINATES;
-//thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL(100,1);
-//std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
+int CAP = 0;
+std::vector<int> GRID_COORDINATES;
+thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL(100, 1);
+std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
+thread_local std::vector<u_int64_t> LEVEL_SHOTS_SPARSE(100, 1);
+std::vector<u_int64_t> MAX_LEVEL_SHOTS_SPARSE;
 
 double FLEETS = 0.0;
+
+u_int64_t binomialCoefficient(int n, int k)
+{
+	u_int64_t coeffient = 1;
+	if (k > n - k) {
+		k = n - k;
+	}
+	for (int i = 0; i < k; ++i) {
+		coeffient *= (n - i);
+		coeffient /= (i + 1);
+	}
+	return coeffient;
+}
 
 void initValues(int n, int d, int ds, int s, int seed)
 {
@@ -49,9 +65,13 @@ void initValues(int n, int d, int ds, int s, int seed)
 		DIMENSION_POWERS[i] = std::pow((double)N, i);
 	}
 
-	/*GRID_COORDINATES = std::vector<int>(N);
+	int upper = std::ceil(std::log2((double)N));
+	int lower = std::floor(std::log2((double)N));
+	CAP = (int)(pow((double)2, upper)) - 1;
+	GRID_COORDINATES = std::vector<int>(CAP);
+
 	GRID_COORDINATES[0] = std::ceil((double)N / 2.0);
-	for (int i = 1; i < std::ceil(std::log2((double)N)); i++) {
+	for (int i = 1; i < upper; i++) {
 		int power = (int)pow(2.0, i-1);
 		int offset = std::ceil((double)GRID_COORDINATES[power - 1] / 2.0);
 		int next = std::pow(2.0, i) - 1;
@@ -63,19 +83,61 @@ void initValues(int n, int d, int ds, int s, int seed)
 			else {
 				GRID_COORDINATES[next + 2 * j] = 1;
 			}
-			GRID_COORDINATES[next + 2 * j + 1] = k + offset;
+			if (k + offset > N) {
+				GRID_COORDINATES[next + 2 * j + 1] = N;
+			}
+			else {
+				GRID_COORDINATES[next + 2 * j + 1] = k + offset;
+			}
 		}
 	}
 
-	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
-	MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(std::ceil(std::log2((double)N)), 1);
-	std::vector<u_int64_t> numberGridPoints(std::ceil(std::log2((double)N)), 1);
+	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(upper , 1);
+	MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(upper , 1);
+	std::vector<u_int64_t> numberGridPoints(upper , 1);
 	int coordinatePoints = 1;
-	for (int i = 1 ; i < std::ceil(std::log2((double)N)); i++) {
+	for (int i = 1 ; i < upper; i++) {
 		coordinatePoints += std::pow((double)2, i);
 		numberGridPoints[i] = std::pow((double)coordinatePoints, D);
 		MAX_LEVEL_SHOTS_FULL[i] = numberGridPoints[i] - numberGridPoints[i - 1];
-	}*/
+	}
+
+	LEVEL_SHOTS_SPARSE = std::vector<u_int64_t>(lower * D + 1, 1);
+	MAX_LEVEL_SHOTS_SPARSE = std::vector<u_int64_t>(lower * D + 1, 0);
+	MAX_LEVEL_SHOTS_SPARSE[0] = 1;
+	for (int i = 1; i < upper; i++) {
+		MAX_LEVEL_SHOTS_SPARSE[i] = pow((double)2, i) * binomialCoefficient(D - 1 + i, D - 1);
+	}
+	
+	std::vector<int> counters(lower + 1, 0);
+	for (int i = 1; i <= lower; i++) {
+		counters[i] = i;
+	}
+	Coordinate worker(D, 0);
+	for (int i = 0; i < (int)pow((double)lower + 1, D); i++) {
+		for (int j = D - 1; j >= 0; j--) {
+			if (worker[j] == lower) {
+				int sumLevel = 0;
+				for (int k = 0; k < D; k++) {
+					sumLevel += worker[k];
+				}
+				if (sumLevel > lower) {
+					MAX_LEVEL_SHOTS_SPARSE[sumLevel] += pow((double)2, sumLevel);
+				}
+				break;
+			}
+		}
+		for (int j = D - 1; j >= 0; j--) {
+			if (worker[j] == lower) {
+				worker[j] = 0;
+			}
+			else {
+				worker[j] = counters[worker[j] + 1];
+				break;
+			}
+		}
+	}
+
 }
 
 Coordinate emptyCoord()
