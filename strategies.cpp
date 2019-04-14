@@ -62,59 +62,40 @@ void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 }
 
 void sparseGridStrategy(StrategyBlock* b, BlockCoordinate c) {
-	int L = 0;
-	int countCoord = 0;
-	int position = 0;
-	int maxLevels = (int)ceil(log2((double)N));
-	std::vector<std::vector<int> > K;
-	K.reserve(maxLevels);
-	for (int i = 0; i <= maxLevels; i++) {
-		K.push_back(std::vector<int>((int)pow(2, i), 0));
-	}
 
-	K[0][0] = (int)floor((double)N / 2);
-	int maxCoord = K[0][0];
-	std::vector<Tuple> lastShot;
-	lastShot.reserve(BLOCK_SIZE);
-	Tuple t1;
-	t1.coords = std::vector<int>(BLOCK_DIMENSIONS, maxCoord);
-	t1.levels = std::vector<int>(BLOCK_DIMENSIONS, 0);
-	lastShot.push_back(t1);
-	(*b)[0] = toIndex(lastShot[0].coords);
-
-	for (int i = 1; i < BLOCK_SIZE; ++i) {
-		std::vector<int> vgl(BLOCK_DIMENSIONS, K[0][0]);
-		vgl.back() = maxCoord;
-		if (lastShot.back().coords == vgl) {
-			int min = (int)ceil((double)K[L][0] / 2);
-			std::vector<int> KAdd;
-			K.push_back(KAdd);
-			for (int k = 0; k < (int)pow(2, L + 1); k += 2) {
-				K[L + 1][k] = K[L][k / 2] - min;
-				K[L + 1][k + 1] = K[L][k / 2] + min;
-			}
-			L++;
-			maxCoord = K[L].back();
-			countCoord = 0;
-			position = 0;
+	Coordinate currentCell;
+	u_int64_t shotNumber;
+	for (int i = 0; i < BLOCK_SIZE; ++i) {
+		currentCell = Coordinate(D, 0);
+		int counter = i;
+		for (int j = D - 1; counter > 0; j--) {
+			currentCell[j] = counter % N;
+			counter = counter / N;
 		}
 
-		Tuple out = lastShot[0];
-		if (countCoord == 0) {
-			out.levels[position]++;
+		for (int j = 0; j < BLOCK_DIMENSION_CUTOFF; j++) {
+			currentCell[j] = c[j];
 		}
-		out.coords[position] = K[out.levels[position]][countCoord];
-		countCoord++;
-		if (countCoord == K[out.levels[position]].size()) {
-			countCoord = 0;
-			position++;
-			if (position == D) {
-				position = 0;
-				lastShot.erase(lastShot.begin());
+
+		int sumLevel = 0;
+		for (int j = 0; j < D; j++) {
+			for (int k = 0; k < CAP; k++) {
+				if (currentCell[j] + 1 == GRID_COORDINATES[k]) {
+					sumLevel += std::floor(std::log2((double)k + 1)) + 1;
+					break;
+				}
 			}
 		}
-		lastShot.push_back(out);
-		(*b)[i] = toIndex(out.coords);
+		// sumLevel - D + 1 - 1, +1 from rule, -1 from array access
+		sumLevel = sumLevel - D;
+		shotNumber = 0;
+		for (int j = 0; j < sumLevel; j++) {
+			shotNumber += MAX_LEVEL_SHOTS_SPARSE[j];
+		}
+		shotNumber += LEVEL_SHOTS_SPARSE[sumLevel];
+		LEVEL_SHOTS_SPARSE[sumLevel]++;
+
+		(*b)[toIndex(currentCell)] = shotNumber;
 	}
 }
 

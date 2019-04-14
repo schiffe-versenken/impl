@@ -115,18 +115,14 @@ void initValues(int n, int d, int ds, int s, int seed)
 	}
 	Coordinate worker(D, 0);
 	for (int i = 0; i < (int)pow((double)lower + 1, D); i++) {
-		for (int j = D - 1; j >= 0; j--) {
-			if (worker[j] == lower) {
-				int sumLevel = 0;
-				for (int k = 0; k < D; k++) {
-					sumLevel += worker[k];
-				}
-				if (sumLevel > lower) {
-					MAX_LEVEL_SHOTS_SPARSE[sumLevel] += pow((double)2, sumLevel);
-				}
-				break;
-			}
+		int sumLevel = 0;
+		for (int k = 0; k < D; k++) {
+			sumLevel += worker[k];
 		}
+		if (sumLevel > lower) {
+			MAX_LEVEL_SHOTS_SPARSE[sumLevel] += pow((double)2, sumLevel);
+		}
+
 		for (int j = D - 1; j >= 0; j--) {
 			if (worker[j] == lower) {
 				worker[j] = 0;

@@ -34,12 +34,6 @@ struct Ship
 	Coordinate max;
 };
 
-struct Tuple
-{
-	Coordinate coords;
-	std::vector<int> levels;
-};
-
 using StrategyBlock = std::vector<u_int64_t>;
 
 void initValues(int n, int d, int ds, int s, int seed);
