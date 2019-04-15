@@ -14,7 +14,11 @@ uint64_t BLOCK_SIZE = 0;
 uint64_t DATA_SIZE = 0;
 uint64_t SHIPS_SIZE = 0;
 
+#ifdef DEBUG
 thread_local std::mt19937 GENERATOR;
+#else
+std::mt19937 GENERATOR;
+#endif
 
 std::vector<uint64_t> DIMENSION_POWERS;
 
