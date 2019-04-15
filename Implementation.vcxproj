@@ -76,6 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
+      <PreprocessorDefinitions>DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread;gmp</LibraryDependencies>
@@ -96,6 +97,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
+      <PreprocessorDefinitions>DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread;gmp</LibraryDependencies>
@@ -116,6 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
+      <PreprocessorDefinitions>DEBUG</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread;gmp</LibraryDependencies>

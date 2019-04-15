@@ -4,6 +4,12 @@
 #include <array>
 #include <random>
 
+#ifdef DEBUG
+#define AT(v, i) v[i]
+#else
+#define AT(v, i) v.at(i)
+#endif
+
 extern int N;
 extern int D;
 extern uint64_t BLOCK_SIZE;

@@ -47,7 +47,7 @@ void calcExpectedValue(int id, std::vector<uint64_t>* values, int* valueCount)
 	{
 		double shiftedTurns = static_cast<double>(turns[i]) - 1.0;
 		int clampedIndex = std::round(shiftedTurns / static_cast<double>(CELLS - 1) * static_cast<double>(DATA_SIZE - 1));
-		(*values)[clampedIndex]++;
+		AT((*values), clampedIndex)++;
 	}
 	*valueCount += SHIPS_SIZE;
 
