@@ -15,7 +15,7 @@ extern u_int64_t CELLS;
 extern uint64_t DATA_SIZE;
 extern uint64_t SHIPS_SIZE;
 extern double FLEETS;
-extern std::mt19937 GENERATOR;
+extern thread_local std::mt19937 GENERATOR;
 extern std::vector<uint64_t> DIMENSION_POWERS;
 
 extern int CAP;

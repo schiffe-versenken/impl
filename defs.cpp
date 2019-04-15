@@ -14,7 +14,7 @@ uint64_t BLOCK_SIZE = 0;
 uint64_t DATA_SIZE = 0;
 uint64_t SHIPS_SIZE = 0;
 
-std::mt19937 GENERATOR;
+thread_local std::mt19937 GENERATOR;
 
 std::vector<uint64_t> DIMENSION_POWERS;
 
