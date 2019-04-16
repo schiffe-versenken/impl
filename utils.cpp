@@ -38,7 +38,7 @@ void genShipsAndCalcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns
 	calcTurns(ships, turns);
 }
 
-void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values, int* valueCount)
+void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
 {
 	std::vector<Ship> ships = std::vector<Ship>(SHIPS_SIZE, Ship {emptyCoord(), emptyCoord()});
 	std::vector<uint64_t> turns = std::vector<uint64_t>(SHIPS_SIZE, CELLS);
@@ -50,7 +50,6 @@ void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values, int* 
 		int clampedIndex = std::round(shiftedTurns / static_cast<double>(CELLS - 1) * static_cast<double>(DATA_SIZE - 1));
 		AT((*values), clampedIndex)++;
 	}
-	*valueCount += SHIPS_SIZE;
 
 	std::cout << "thread " << id << " finished \n";
 }
@@ -140,10 +139,10 @@ void calcExpectedValueMT(int threads)
 	std::thread t[threads];
 
 	std::vector<std::atomic<uint64_t>> values = std::vector<std::atomic<uint64_t>>(DATA_SIZE);
-	int n = 0;
+	int n = threads * SHIPS_SIZE;
 	for(int i=0; i < threads;++i)
 	{
-		t[i] = std::thread(calcExpectedValue, i, &values, &n);
+		t[i] = std::thread(calcExpectedValue, i, &values);
 	}
 	for (int i = 0; i < threads; ++i)
 	{
