@@ -67,6 +67,7 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 		std::remove(buffAsStdStr.c_str());
 	}
 	resultsFile.open(buffAsStdStr);
+	resultsFile << n << " " << SHIPS << " " << CELLS << " ";
 
 	//Magic
 
