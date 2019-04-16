@@ -8,6 +8,7 @@
 #include <gmp.h>
 #include <iostream>
 #include <fstream>
+#include <atomic>
 
 void calcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
@@ -37,7 +38,7 @@ void genShipsAndCalcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns
 	calcTurns(ships, turns);
 }
 
-void calcExpectedValue(int id, std::vector<uint64_t>* values, int* valueCount)
+void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values, int* valueCount)
 {
 	std::vector<Ship> ships = std::vector<Ship>(SHIPS_SIZE, Ship {emptyCoord(), emptyCoord()});
 	std::vector<uint64_t> turns = std::vector<uint64_t>(SHIPS_SIZE, CELLS);
@@ -54,7 +55,7 @@ void calcExpectedValue(int id, std::vector<uint64_t>* values, int* valueCount)
 	std::cout << "thread " << id << " finished \n";
 }
 
-void outputData(std::vector<uint64_t>& values, int n)
+void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 {
 	std::ofstream resultsFile;
 
@@ -137,7 +138,7 @@ void calcExpectedValueMT(int threads)
 	auto start = std::chrono::system_clock::now();
 	std::thread t[threads];
 
-	std::vector<uint64_t> values = std::vector<uint64_t>(DATA_SIZE, 0);
+	std::vector<std::atomic<uint64_t>> values = std::vector<std::atomic<uint64_t>>(DATA_SIZE);
 	int n = 0;
 	for(int i=0; i < threads;++i)
 	{
