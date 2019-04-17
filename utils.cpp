@@ -70,7 +70,7 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 
 	//Magic
 
-	std::string value = "1.0@-" + std::to_string(n);
+	std::string value = "1.0@-" + std::to_string(SHIPS);
 	mpf_t w;
 	mpf_init(w);
 	mpf_set_str(w, value.c_str(), -2);
@@ -91,46 +91,25 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 	double eShips = 0;
 	for (int i = 0; i < DATA_SIZE; ++i)
 	{
+		int newValue = std::round(values[i] * (double)SHIPS / (double)n);
 		sum += values[i];
 		uint64_t turns = (i +1) * (CELLS / DATA_SIZE);
-		std::string tmpValue = "1.0@" + std::to_string(values[i]);
+		std::string tmpValue = "1.0@" + std::to_string(newValue);
 		mpf_set_str(temp, tmpValue.c_str(), -2);
 		mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
 		double pShips = values[i] / static_cast<double>(n);
 		eShips += pShips * turns;
-		resultsFile << turns << "," << pShips << "," << mpf_get_d(newW) << " ";
+		resultsFile << turns << "," << (sum / static_cast<double>(n)) << "," << mpf_get_d(newW) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
+
+	resultsFile << eShips << " " << mpf_get_d(m);
 	resultsFile.close();
 
-	double e = mpf_get_d(m);
-
-
-	std::cout << "expected ship turn count: " << eShips << std::endl;
-	std::cout << "ship sample count: " << n << std::endl;
-	std::cout << "ship coverage: " << (static_cast<double>(n) / static_cast<double>(SHIPS)) * 100.0 << "%" <<std::endl;
-
-	std::cout << "expected fleet turn count: " << e << std::endl;
-
-	int fleetsExp = n;
-	std::string tmpValue = "1.0@" + std::to_string(fleetsExp);
-	mpf_set_str(temp, tmpValue.c_str(), -2);
-	mpf_sub_ui(temp, temp, 1);
-	mp_exp_t exp;
-	tmpValue = mpf_get_str(nullptr, &exp, 10, 6, temp);
-	tmpValue.insert(1, ".");
-	std::cout << "fleet sample count: " << tmpValue << "e" << std::to_string(exp) << std::endl;
-
-	int allFleetsExp = SHIPS;
-	tmpValue = "1.0@" + std::to_string(fleetsExp - allFleetsExp);
-	mpf_set_str(temp, tmpValue.c_str(), -2);
-	mpf_mul_ui(temp, temp, 100);
-	tmpValue = mpf_get_str(nullptr, &exp, 10, 6, temp);
-	tmpValue.insert(1, ".");
-	std::cout << "fleet coverage: " << tmpValue << "e" << std::to_string(exp) << "%" <<std::endl;
+	std::cout << "Output written" <<std::endl;
 }
 
 void calcExpectedValueMT(int threads)
