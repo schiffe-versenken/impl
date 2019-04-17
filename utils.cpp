@@ -92,12 +92,12 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 	for (int i = 0; i < DATA_SIZE; ++i)
 	{
 		sum += values[i];
-		uint64_t newValue = std::round(values[i] * (double)SHIPS / (double)n);
+		uint64_t newValue = std::round(values[i] * ((double)SHIPS / (double)n));
 		uint64_t newValueSum = std::round(sum * (double)SHIPS / (double)n);
 		uint64_t turns = (i +1) * (CELLS / DATA_SIZE);
-		std::string tmpValue = "1.0@" + std::to_string(newValue);
-		mpf_set_str(temp, tmpValue.c_str(), -2);
-		mpf_mul(newW, w, temp);
+		std::string tmpValue = "1.0@" + std::to_string(newValueSum - SHIPS);
+		mpf_set_str(newW, tmpValue.c_str(), -2);
+		//mpf_mul(newW, w, temp);
 		mpf_sub(temp, newW, w);
 		mpf_set(w, newW);
 		double pShips = values[i] / static_cast<double>(n);
@@ -110,7 +110,7 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 	resultsFile << eShips << " " << mpf_get_d(m);
 	resultsFile.close();
 
-	std::cout << "Output written" <<std::endl;
+	std::cout << "Output written " << mpf_get_d(m) << std::endl;
 }
 
 void calcExpectedValueMT(int threads)
