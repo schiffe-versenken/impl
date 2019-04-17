@@ -87,12 +87,14 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 	mpf_set_d(m, 0.0);
 
 	uint64_t sum = 0;
+	uint64_t newValueSum = 0;
 
 	double eShips = 0;
 	for (int i = 0; i < DATA_SIZE; ++i)
 	{
-		int newValue = std::round(values[i] * (double)SHIPS / (double)n);
 		sum += values[i];
+		uint64_t newValue = std::round(values[i] * (double)SHIPS / (double)n);
+		newValueSum += newValue;
 		uint64_t turns = (i +1) * (CELLS / DATA_SIZE);
 		std::string tmpValue = "1.0@" + std::to_string(newValue);
 		mpf_set_str(temp, tmpValue.c_str(), -2);
@@ -101,7 +103,7 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 		mpf_set(w, newW);
 		double pShips = values[i] / static_cast<double>(n);
 		eShips += pShips * turns;
-		resultsFile << turns << "," << (sum / static_cast<double>(n)) << "," << mpf_get_d(newW) << " ";
+		resultsFile << turns << "," << (sum / static_cast<double>(n)) << "," << (newValueSum - SHIPS) << " ";
 		mpf_mul_ui(temp, temp, turns);
 		mpf_add(m, m, temp);
 	}
