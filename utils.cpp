@@ -92,7 +92,6 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 	for (int i = 0; i < DATA_SIZE; ++i)
 	{
 		sum += values[i];
-		uint64_t newValue = std::round(values[i] * ((double)SHIPS / (double)n));
 		uint64_t newValueSum = std::round(sum * (double)SHIPS / (double)n);
 		uint64_t turns = (i +1) * (CELLS / DATA_SIZE);
 		std::string tmpValue = "1.0@" + std::to_string(newValueSum - SHIPS);

@@ -16,7 +16,9 @@ Available strategies:
 
 # Output
 
-The program outputs a file called `results-<n>-<d>.txt` which contains data for two plots. Each data point has the format `x,y_1,y_2`.
+The program outputs a file called `results-<n>-<d>.txt` which contains data for two plots.
+The content has the form `<sample size> <population size> <amount of cells> (data_point)+ <expected ship value> <expected fleet value>`.
+Each data_point has the format `x,y_1,y_2`.
 
 # TODO
 
