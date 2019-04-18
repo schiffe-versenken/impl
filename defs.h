@@ -24,7 +24,7 @@ extern uint64_t SHIPS_SIZE;
 extern double FLEETS;
 
 #ifdef DEBUG
-extern thread_local std::mt19937 GENERATOR;
+extern thread_local std::mt19937_64 GENERATOR;
 #else
 extern std::mt19937 GENERATOR;
 #endif

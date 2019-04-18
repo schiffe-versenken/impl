@@ -16,9 +16,9 @@ uint64_t SHIPS_SIZE = 0;
 uint64_t OUTPUT_SIZE;
 
 #ifdef DEBUG
-thread_local std::mt19937 GENERATOR;
+thread_local std::mt19937_64 GENERATOR;
 #else
-std::mt19937 GENERATOR;
+std::mt19937_64 GENERATOR;
 #endif
 
 std::vector<uint64_t> DIMENSION_POWERS;
@@ -63,7 +63,7 @@ void initValues(int n, int d, int ds, int s, int seed)
 	OUTPUT_SIZE = std::min(DATA_SIZE, (uint64_t) 1000000);
 	SHIPS_SIZE = std::pow((double)N, s);
 
-	GENERATOR = std::mt19937(seed);
+	GENERATOR = std::mt19937_64(seed);
 
 	DIMENSION_POWERS = std::vector<uint64_t>(D);
 	for (int i = 0; i < d; i++)

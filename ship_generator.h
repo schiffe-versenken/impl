@@ -9,7 +9,7 @@ class ShipGenerator {
 public:
 	template< class Generator >
 	void operator()(std::vector<Ship>& target, Generator& gen) {
-		static std::uniform_int_distribution<> dis(0, N - 1);
+		static std::uniform_int_distribution<int> dis(0, N - 1);
 
 		for (int i = 0; i < target.size(); ++i) {
 			for (int d = 0; d < D; ++d) {
