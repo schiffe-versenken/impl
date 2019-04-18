@@ -13,6 +13,7 @@ uint64_t BLOCK_SIZE = 0;
 
 uint64_t DATA_SIZE = 0;
 uint64_t SHIPS_SIZE = 0;
+uint64_t OUTPUT_SIZE;
 
 #ifdef DEBUG
 thread_local std::mt19937 GENERATOR;
@@ -59,6 +60,7 @@ void initValues(int n, int d, int ds, int s, int seed)
 	BLOCK_COUNT = CELLS / BLOCK_SIZE;
 
 	DATA_SIZE = BLOCK_SIZE;
+	OUTPUT_SIZE = std::min(DATA_SIZE, (uint64_t) 1000000);
 	SHIPS_SIZE = std::pow((double)N, s);
 
 	GENERATOR = std::mt19937(seed);

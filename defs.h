@@ -19,6 +19,7 @@ extern int BLOCK_DIMENSIONS;
 extern u_int64_t SHIPS;
 extern u_int64_t CELLS;
 extern uint64_t DATA_SIZE;
+extern uint64_t OUTPUT_SIZE;
 extern uint64_t SHIPS_SIZE;
 extern double FLEETS;
 

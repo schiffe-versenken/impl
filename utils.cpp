@@ -47,7 +47,7 @@ void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
 	for (int i = 0; i < SHIPS_SIZE; ++i)
 	{
 		double shiftedTurns = static_cast<double>(turns[i]) - 1.0;
-		int clampedIndex = std::round(shiftedTurns / static_cast<double>(CELLS - 1) * static_cast<double>(DATA_SIZE - 1));
+		int clampedIndex = std::round(shiftedTurns / static_cast<double>(CELLS - 1) * static_cast<double>(OUTPUT_SIZE - 1));
 		AT((*values), clampedIndex)++;
 	}
 
@@ -89,11 +89,11 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
 	uint64_t sum = 0;
 
 	double eShips = 0;
-	for (int i = 0; i < DATA_SIZE; ++i)
+	for (int i = 0; i < OUTPUT_SIZE; ++i)
 	{
 		sum += values[i];
 		uint64_t newValueSum = std::round(sum * (double)SHIPS / (double)n);
-		uint64_t turns = (i +1) * (CELLS / DATA_SIZE);
+		uint64_t turns = (i +1) * (CELLS / OUTPUT_SIZE);
 		std::string tmpValue = "1.0@" + std::to_string(newValueSum - SHIPS);
 		mpf_set_str(newW, tmpValue.c_str(), -2);
 		//mpf_mul(newW, w, temp);
@@ -117,7 +117,7 @@ void calcExpectedValueMT(int threads)
 	auto start = std::chrono::system_clock::now();
 	std::thread t[threads];
 
-	std::vector<std::atomic<uint64_t>> values = std::vector<std::atomic<uint64_t>>(DATA_SIZE);
+	std::vector<std::atomic<uint64_t>> values = std::vector<std::atomic<uint64_t>>(OUTPUT_SIZE);
 	int n = threads * SHIPS_SIZE;
 	for(int i=0; i < threads;++i)
 	{
