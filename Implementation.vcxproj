@@ -64,6 +64,7 @@
   <ItemGroup>
     <ClCompile Include="defs.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ship_generator.cpp" />
     <ClCompile Include="strategies.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
