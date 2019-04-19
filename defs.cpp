@@ -74,14 +74,15 @@ void initValues(int n, int d, int ds, int s, int seed)
 	int upper = std::ceil(std::log2((double)N));
 	int lower = std::floor(std::log2((double)N));
 	CAP = (int)(pow((double)2, upper)) - 1;
+	int lastLevelRedundancy = std::pow((double)2, lower) - (CAP - N);
 	GRID_COORDINATES = std::vector<int>(CAP);
 
 	GRID_COORDINATES[0] = std::ceil((double)N / 2.0);
 	for (int i = 1; i < upper; i++) {
-		int power = (int)pow(2.0, i-1);
+		int power = (int)pow(2.0, i - 1);
 		int offset = std::ceil((double)GRID_COORDINATES[power - 1] / 2.0);
 		int next = std::pow(2.0, i) - 1;
-		for (int j = 0; j < next - power +1; j++) {
+		for (int j = 0; j < next - power + 1; j++) {
 			int k = GRID_COORDINATES[power + j - 1];
 			if (k - offset != 0) {
 				GRID_COORDINATES[next + 2 * j] = k - offset;
@@ -98,11 +99,11 @@ void initValues(int n, int d, int ds, int s, int seed)
 		}
 	}
 
-	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(upper , 1);
-	MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(upper , 1);
-	std::vector<u_int64_t> numberGridPoints(upper , 1);
+	LEVEL_SHOTS_FULL = std::vector<u_int64_t>(upper, 1);
+	MAX_LEVEL_SHOTS_FULL = std::vector<u_int64_t>(upper, 1);
+	std::vector<u_int64_t> numberGridPoints(upper, 1);
 	int coordinatePoints = 1;
-	for (int i = 1 ; i < upper; i++) {
+	for (int i = 1; i < upper; i++) {
 		coordinatePoints += std::pow((double)2, i);
 		numberGridPoints[i] = std::pow((double)coordinatePoints, D);
 		MAX_LEVEL_SHOTS_FULL[i] = numberGridPoints[i] - numberGridPoints[i - 1];
@@ -111,10 +112,10 @@ void initValues(int n, int d, int ds, int s, int seed)
 	LEVEL_SHOTS_SPARSE = std::vector<u_int64_t>(lower * D + 1, 1);
 	MAX_LEVEL_SHOTS_SPARSE = std::vector<u_int64_t>(lower * D + 1, 0);
 	MAX_LEVEL_SHOTS_SPARSE[0] = 1;
-	for (int i = 1; i < upper; i++) {
+	for (int i = 1; i < lower; i++) {
 		MAX_LEVEL_SHOTS_SPARSE[i] = pow((double)2, i) * binomialCoefficient(D - 1 + i, D - 1);
 	}
-	
+
 	std::vector<int> counters(lower + 1, 0);
 	for (int i = 1; i <= lower; i++) {
 		counters[i] = i;
@@ -125,8 +126,19 @@ void initValues(int n, int d, int ds, int s, int seed)
 		for (int k = 0; k < D; k++) {
 			sumLevel += worker[k];
 		}
-		if (sumLevel > lower) {
-			MAX_LEVEL_SHOTS_SPARSE[sumLevel] += pow((double)2, sumLevel);
+		if (sumLevel >= lower) {
+			//To account for redundancy on the last level if N is not multiple of (16*2^k)-1
+			int addition = 1;
+			for (int j = 0; j < D; j++) {
+				if (worker[j] == counters[lower]) {
+					addition = addition * lastLevelRedundancy;
+				}
+				else {
+					addition = addition * std::pow((double)2, worker[j]);
+				}
+			}
+			MAX_LEVEL_SHOTS_SPARSE[sumLevel] += addition;
+
 		}
 
 		for (int j = D - 1; j >= 0; j--) {
