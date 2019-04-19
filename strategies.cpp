@@ -204,7 +204,7 @@ void findMins(int blockIndex, StrategyBlock* strat, std::vector<Ship>& ships, st
 	std::vector<bool> workDirections = std::vector<bool>(BLOCK_DIMENSIONS, true);
 	Coordinate workCoord = emptyCoord();
 	BlockCoordinate c = generateBlock(strat, blockIndex);
-	Coordinate min, max = emptyCoord();
+	Coordinate min = emptyCoord(), max = emptyCoord();
 	for (uint32_t i = 0; i < ships.size(); ++i) {
 		Ship& ship = ships[i];
 		if (inBlock(c, ship))

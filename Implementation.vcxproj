@@ -87,7 +87,7 @@
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
       <RelaxIEEE>true</RelaxIEEE>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
@@ -108,7 +108,7 @@
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
       <RelaxIEEE>true</RelaxIEEE>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
@@ -129,7 +129,7 @@
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);NDEBUG</PreprocessorDefinitions>
       <RelaxIEEE>true</RelaxIEEE>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>

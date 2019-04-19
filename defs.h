@@ -5,9 +5,9 @@
 #include <random>
 
 #ifdef DEBUG
-#define AT(v, i) v[i]
-#else
 #define AT(v, i) v.at(i)
+#else
+#define AT(v, i) v[i]
 #endif
 
 extern int N;

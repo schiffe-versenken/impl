@@ -61,7 +61,7 @@ void initValues(int n, int d, int ds, int s, int seed)
 
 	DATA_SIZE = BLOCK_SIZE;
 	OUTPUT_SIZE = std::min(DATA_SIZE, (uint64_t) 1000000);
-	SHIPS_SIZE = std::pow((double)N, s);
+	SHIPS_SIZE = std::min<uint64_t>(SHIPS, std::pow((double)N, s));
 
 	GENERATOR = std::mt19937_64(seed);
 

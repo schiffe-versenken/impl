@@ -13,4 +13,6 @@ public:
 	void operator()(std::vector<Ship>& target, Generator& gen);
 private:
 	std::vector<int> values;
+	std::pair<int, int> getMinMax(int index);
+	Ship fromIndex(uint64_t index);
 };
