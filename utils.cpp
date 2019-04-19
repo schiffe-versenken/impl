@@ -54,7 +54,7 @@ void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
 	std::cout << "thread " << id << " finished \n";
 }
 
-void outputData(std::vector<std::atomic<uint64_t>>& values, int n)
+void outputData(std::vector<std::atomic<uint64_t>>& values, uint64_t n)
 {
 	std::ofstream resultsFile;
 
@@ -118,7 +118,7 @@ void calcExpectedValueMT(int threads)
 	std::thread t[threads];
 
 	std::vector<std::atomic<uint64_t>> values = std::vector<std::atomic<uint64_t>>(OUTPUT_SIZE);
-	int n = threads * SHIPS_SIZE;
+	uint64_t n = threads * SHIPS_SIZE;
 	for(int i=0; i < threads;++i)
 	{
 		t[i] = std::thread(calcExpectedValue, i, &values);
