@@ -2,6 +2,7 @@
 #include <random>
 #include <map>
 #include <functional>
+#include <cassert>
 
 std::function<void(StrategyBlock*, BlockCoordinate)> generator;
 
@@ -204,6 +205,15 @@ void findMins(int blockIndex, StrategyBlock* strat, std::vector<Ship>& ships, st
 	std::vector<bool> workDirections = std::vector<bool>(BLOCK_DIMENSIONS, true);
 	Coordinate workCoord = emptyCoord();
 	BlockCoordinate c = generateBlock(strat, blockIndex);
+	bool one = false;
+	for (uint64_t i : *strat)
+	{
+		if (i == 1)
+		{
+			one = true;
+		}
+	}
+	assert(one);
 	Coordinate min = emptyCoord(), max = emptyCoord();
 	for (uint32_t i = 0; i < ships.size(); ++i) {
 		Ship& ship = ships[i];
