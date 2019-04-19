@@ -128,7 +128,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 	for (int i = BLOCK_DIMENSIONS - 1; i >= 0; --i) {
 		directions[i] = true;
 	}
-	c = c1;
+	c = Coordinate(c1);
 	uint64_t min = CELLS;
 
 	while (directions[0])
@@ -205,15 +205,6 @@ void findMins(int blockIndex, StrategyBlock* strat, std::vector<Ship>& ships, st
 	std::vector<bool> workDirections = std::vector<bool>(BLOCK_DIMENSIONS, true);
 	Coordinate workCoord = emptyCoord();
 	BlockCoordinate c = generateBlock(strat, blockIndex);
-	bool one = false;
-	for (uint64_t i : *strat)
-	{
-		if (i == 1)
-		{
-			one = true;
-		}
-	}
-	assert(one);
 	Coordinate min = emptyCoord(), max = emptyCoord();
 	for (uint32_t i = 0; i < ships.size(); ++i) {
 		Ship& ship = ships[i];

@@ -31,7 +31,7 @@ Ship ShipGenerator::fromIndex(uint64_t index)
 {
 	Coordinate min = emptyCoord();
 	Coordinate max = emptyCoord();
-	for (int d = D; d >= 1; --d) {
+	for (int d = D - 1; d >= 0; --d) {
 		uint64_t pow = std::pow((N * (N + 1)) / 2, (double) d);
 		std::pair<int, int> minMax = getMinMax(index / static_cast<uint64_t>(pow));
 		min[d] = minMax.first;

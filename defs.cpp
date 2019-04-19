@@ -50,7 +50,7 @@ void initValues(int n, int d, int ds, int s, int seed)
 	N = n;
 	D = d;
 
-	SHIPS = std::pow((double) N * (N + 1), D);
+	SHIPS = std::pow((double) (N * (N + 1)) / 2, D);
 	CELLS = std::pow((double) N, D);
 	FLEETS = std::pow((double)2, (double)SHIPS) - 1;
 
