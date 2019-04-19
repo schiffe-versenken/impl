@@ -26,7 +26,7 @@ extern double FLEETS;
 #ifdef DEBUG
 extern thread_local std::mt19937_64 GENERATOR;
 #else
-extern std::mt19937 GENERATOR;
+extern std::mt19937_64 GENERATOR;
 #endif
 
 extern std::vector<uint64_t> DIMENSION_POWERS;
