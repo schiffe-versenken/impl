@@ -29,6 +29,7 @@ thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL(100, 1);
 std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
 thread_local std::vector<u_int64_t> LEVEL_SHOTS_SPARSE(100, 1);
 std::vector<u_int64_t> MAX_LEVEL_SHOTS_SPARSE;
+std::vector<int> PRIMES;
 
 double FLEETS = 0.0;
 
@@ -152,6 +153,8 @@ void initValues(int n, int d, int ds, int s, int seed)
 		}
 	}
 
+	PRIMES = {2,3,5,7,11,13,17,19,23,29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 
+		103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199 };
 }
 
 Coordinate emptyCoord()

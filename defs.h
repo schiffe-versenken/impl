@@ -37,6 +37,7 @@ extern thread_local std::vector<u_int64_t> LEVEL_SHOTS_FULL;
 extern std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
 extern thread_local std::vector<u_int64_t> LEVEL_SHOTS_SPARSE;
 extern std::vector<u_int64_t> MAX_LEVEL_SHOTS_SPARSE;
+extern std::vector<int> PRIMES;
 
 typedef std::vector<int> Coordinate;
 using BlockCoordinate = std::vector<int>;

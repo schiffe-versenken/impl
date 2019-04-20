@@ -16,6 +16,17 @@ uint64_t toIndex(Coordinate& c)
 	return index;
 }
 
+int halton(int base, double index) {
+	double coeficient = 1.0;
+	double result = 0.0;
+	while (index > 0) {
+		coeficient = coeficient / base;
+		result += coeficient * ((int)index % base);
+		index = std::floor(index / base);
+	}
+	return (int)std::floor(result * N);
+}
+
 void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 {
 	static std::uniform_int_distribution<u_int64_t> dis(1, CELLS);
@@ -113,10 +124,38 @@ void sparseGridStrategy(StrategyBlock* b, BlockCoordinate c) {
 	}
 }
 
+void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
+	int relativeShotNumber = 1;
+	int realShotNumber = 1;
+	Coordinate currentCell = emptyCoord();
+	for (int j = 0; j < BLOCK_DIMENSION_CUTOFF; j++) {
+		currentCell[j] = c[j];
+	}
+	while (relativeShotNumber < BLOCK_SIZE) {
+		for (int i = 0; i < D; i++) {
+			int temp = halton(PRIMES[i], realShotNumber);
+			if (i < BLOCK_DIMENSION_CUTOFF && temp != c[i]) {
+				break;
+			}
+			if (i >= BLOCK_DIMENSION_CUTOFF) {
+				currentCell[i] = temp;
+			}
+			if (i == D - 1) {
+				if ((*b)[toIndex(currentCell)] == 0) {
+					(*b)[toIndex(currentCell)] = relativeShotNumber;
+					relativeShotNumber++;
+				}
+			}
+		}
+		realShotNumber++;
+	}
+}
+
 std::map<std::string, std::function<void (StrategyBlock*, BlockCoordinate)>> strategyNames = {
 	{ "random", &randomStrategy },
 	{ "fullGrid", &fullGridStrategy },
-	{ "sparseGrid", &sparseGridStrategy}
+	{ "sparseGrid", &sparseGridStrategy},
+	{ "halton", &haltonStrategy}
 };
 
 void createStrategy(std::string& name)
