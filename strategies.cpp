@@ -26,7 +26,7 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 		}
 
 		for (int i = 0; i < CELLS; ++i) {
-			std::swap((*b)[i], (*b)[dis(GENERATOR)]);
+			std::swap((*b)[i], (*b)[dis(GENERATOR) - 1]);
 		}
 	}
 	else
