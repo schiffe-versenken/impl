@@ -131,7 +131,7 @@ void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
 	for (int j = 0; j < BLOCK_DIMENSION_CUTOFF; j++) {
 		currentCell[j] = c[j];
 	}
-	while (relativeShotNumber < BLOCK_SIZE) {
+	while (relativeShotNumber <= BLOCK_SIZE) {
 		for (int i = 0; i < D; i++) {
 			int temp = halton(PRIMES[i], realShotNumber);
 			if (i < BLOCK_DIMENSION_CUTOFF && temp != c[i]) {
