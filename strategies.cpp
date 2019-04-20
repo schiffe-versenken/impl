@@ -18,9 +18,22 @@ uint64_t toIndex(Coordinate& c)
 
 void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 {
-	std::uniform_int_distribution<u_int64_t> dis(1, CELLS);
-	for (int i = 0; i < BLOCK_SIZE; ++i) {
-		(*b)[i] = dis(GENERATOR);
+	static std::uniform_int_distribution<u_int64_t> dis(1, CELLS);
+	if (BLOCK_COUNT == 1)
+	{
+		for (int i = 0; i < BLOCK_SIZE; ++i) {
+			(*b)[i] = i + 1;
+		}
+
+		for (int i = 0; i < CELLS; ++i) {
+			std::swap((*b)[i], (*b)[dis(GENERATOR)]);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < BLOCK_SIZE; ++i) {
+			(*b)[i] = dis(GENERATOR);
+		}
 	}
 }
 
