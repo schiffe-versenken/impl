@@ -30,6 +30,7 @@ std::vector<u_int64_t> MAX_LEVEL_SHOTS_FULL;
 thread_local std::vector<u_int64_t> LEVEL_SHOTS_SPARSE(100, 1);
 std::vector<u_int64_t> MAX_LEVEL_SHOTS_SPARSE;
 std::vector<int> PRIMES;
+thread_local std::vector<bool> haltonHits(BLOCK_SIZE, false);
 
 double FLEETS = 0.0;
 

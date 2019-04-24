@@ -141,14 +141,17 @@ void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
 				currentCell[i] = temp;
 			}
 			if (i == D - 1) {
-				if ((*b)[toIndex(currentCell)] == 0) {
+				if (!haltonHits[toIndex(currentCell)]) {
+					haltonHits[toIndex(currentCell)] = true;
 					(*b)[toIndex(currentCell)] = relativeShotNumber;
 					relativeShotNumber++;
 				}
 			}
 		}
 		realShotNumber++;
+		
 	}
+	
 }
 
 std::map<std::string, std::function<void (StrategyBlock*, BlockCoordinate)>> strategyNames = {
