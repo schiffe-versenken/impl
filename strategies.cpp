@@ -29,7 +29,7 @@ int halton(int base, double index) {
 
 void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 {
-	static std::uniform_int_distribution<u_int64_t> dis(1, CELLS);
+	static std::uniform_int_distribution<u_int64_t> dis(0, CELLS - 1);
 	if (BLOCK_COUNT == 1)
 	{
 		for (int i = 0; i < BLOCK_SIZE; ++i) {
@@ -37,7 +37,7 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 		}
 
 		for (int i = 0; i < CELLS; ++i) {
-			std::swap((*b)[i], (*b)[dis(GENERATOR) - 1]);
+			std::swap((*b)[i], (*b)[dis(GENERATOR)]);
 		}
 	}
 	else
