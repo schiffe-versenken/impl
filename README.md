@@ -6,7 +6,7 @@ Linux: Use `make` to build the program using g++.
 
 # Usage
 
-`./sv -n/--size <size of playing field> -d/--dimension <dimensions> -b/--data-size <data size exponent> -c/--ships-size <ships size exponent> -s/--strategy <strategy name> -t/--threads <amount of threads> -x/--seed <prng seed>`
+`./sv -n/--size <size of playing field> -d/--dimension <dimensions> -b/--data-size <data size exponent> -c/--ships-size <ships count> -s/--strategy <strategy name> -t/--threads <amount of threads> -x/--seed <prng seed>`
 
 Available strategies:
 - `random`
