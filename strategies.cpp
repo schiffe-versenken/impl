@@ -43,7 +43,7 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 	else
 	{
 		for (int i = 0; i < BLOCK_SIZE; ++i) {
-			(*b)[i] = dis(GENERATOR);
+			(*b)[i] = dis(GENERATOR) + 1;
 		}
 	}
 }
