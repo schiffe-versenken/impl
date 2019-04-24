@@ -12,7 +12,7 @@ Available strategies:
 - `random`
 
 ## Example
-`./sv -n 10 -d 8 -t 10 -s random -b 6 -c 7 -x 1234`
+`./sv -n 10 -d 8 -t 10 -s random -b 6 -c 10000 -x 1234`
 
 # Output
 
