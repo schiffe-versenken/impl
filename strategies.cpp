@@ -42,9 +42,7 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 	}
 	else
 	{
-		for (int i = 0; i < BLOCK_SIZE; ++i) {
-			(*b)[i] = dis(GENERATOR) + 1;
-		}
+		
 	}
 }
 
@@ -180,6 +178,7 @@ BlockCoordinate generateBlock(StrategyBlock* b, int index)
 
 uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinate& c, Coordinate& c1, Coordinate& c2)
 {
+	static std::uniform_int_distribution<u_int64_t> dis(1, CELLS);
 	for (int i = BLOCK_DIMENSIONS - 1; i >= 0; --i) {
 		directions[i] = true;
 	}
@@ -192,7 +191,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 		if (directions[BLOCK_DIMENSIONS - 1])
 		{
 			for (int i = 0; i <= c2[D - 1] - c1[D - 1]; ++i) {
-				uint64_t value = AT(strat, index + i);
+				uint64_t value = dis(GENERATOR);
 				if (value < min) {
 					min = value;
 				}
@@ -202,7 +201,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 		else
 		{
 			for (int i = c2[D - 1] - c1[D - 1]; i >= 0; --i) {
-				uint64_t value = AT(strat, index - i);
+				uint64_t value = dis(GENERATOR);
 				if (value < min) {
 					min = value;
 				}

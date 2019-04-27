@@ -12,7 +12,7 @@
 
 void calcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
-	static StrategyBlock* block = emptyStrategyBlock();
+	static StrategyBlock* block = new StrategyBlock(1);
 	for (int b = 0; b < BLOCK_COUNT; b++)
 	{
 
