@@ -8,7 +8,7 @@ u_int64_t CELLS = 0;
 
 int BLOCK_DIMENSIONS = 0;
 int BLOCK_DIMENSION_CUTOFF = 0;
-int BLOCK_COUNT = 0;
+uint64_t BLOCK_COUNT = 0;
 uint64_t BLOCK_SIZE = 0;
 
 uint64_t DATA_SIZE = 0;
@@ -47,7 +47,7 @@ u_int64_t binomialCoefficient(int n, int k)
 	return coeffient;
 }
 
-void initValues(int n, int d, int ds, int s, int seed)
+void initValues(uint64_t n, uint64_t d, uint64_t ds, uint64_t s, int seed)
 {
 	N = n;
 	D = d;

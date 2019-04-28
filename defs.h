@@ -13,7 +13,7 @@
 extern int N;
 extern int D;
 extern uint64_t BLOCK_SIZE;
-extern int BLOCK_COUNT;
+extern uint64_t BLOCK_COUNT;
 extern int BLOCK_DIMENSION_CUTOFF;
 extern int BLOCK_DIMENSIONS;
 extern u_int64_t SHIPS;
@@ -51,7 +51,7 @@ struct Ship
 
 using StrategyBlock = std::vector<u_int64_t>;
 
-void initValues(int n, int d, int ds, int s, int seed);
+void initValues(uint64_t n, uint64_t d, uint64_t ds, uint64_t s, int seed);
 
 Coordinate emptyCoord();
 

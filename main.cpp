@@ -3,6 +3,7 @@
 #include <string.h>
 #include "utils.h"
 #include "strategies.h"
+#include <atomic>
 
 int main(int argc, char **argv)
 {
@@ -12,7 +13,7 @@ int main(int argc, char **argv)
 	int threads;
 	int seed;
 	int ds;
-	int s;
+	uint64_t s;
 	std::string stratname;
 
 	while (1)
@@ -67,7 +68,7 @@ int main(int argc, char **argv)
 			break;
 
 		case 'c':
-			s = atoi(optarg);
+			s = atol(optarg);
 			break;
 
 		case 's':
