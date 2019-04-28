@@ -68,48 +68,22 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, uint64_t n)
 	resultsFile.open(buffAsStdStr);
 	resultsFile << n << " " << SHIPS << " " << CELLS << " ";
 
-	//Magic
-
-	std::string value = "1.0@-" + std::to_string(SHIPS);
-	mpf_t w;
-	mpf_init(w);
-	mpf_set_str(w, value.c_str(), -2);
-
-	mpf_t newW;
-	mpf_init(newW);
-	mpf_set_d(newW, 1.0);
-
-	mpf_t temp;
-	mpf_init(temp);
-
-	mpf_t m;
-	mpf_init(m);
-	mpf_set_d(m, 0.0);
-
-	uint64_t sum = 0;
-
+	double sum = 0;
 	double eShips = 0;
 	for (int i = 0; i < OUTPUT_SIZE; ++i)
 	{
 		sum += values[i];
-		uint64_t newValueSum = std::round(sum * ((double)SHIPS / (double)n));
+		double newValueSum = sum * (SHIPS / (double)n);
 		uint64_t turns = (i +1) * (CELLS / OUTPUT_SIZE);
-		std::string tmpValue = "1.0@" + std::to_string(newValueSum - SHIPS);
-		mpf_set_str(newW, tmpValue.c_str(), -2);
-		//mpf_mul(newW, w, temp);
-		mpf_sub(temp, newW, w);
-		mpf_set(w, newW);
 		double pShips = values[i] / static_cast<double>(n);
 		eShips += pShips * turns;
-		resultsFile << turns << "," << (sum / static_cast<double>(n)) << "," << (static_cast<int64_t>(newValueSum) - static_cast<int64_t>(SHIPS)) << " ";
-		mpf_mul_ui(temp, temp, turns);
-		mpf_add(m, m, temp);
+		resultsFile << turns << "," << (sum / static_cast<double>(n)) << "," << newValueSum - SHIPS << " ";
 	}
 
-	resultsFile << eShips << " " << mpf_get_d(m);
+	resultsFile << eShips << " " << 0;
 	resultsFile.close();
 
-	std::cout << "Output written " << mpf_get_d(m) << std::endl;
+	std::cout << "Output written " << "none" << std::endl;
 }
 
 void calcExpectedValueMT(int threads)
