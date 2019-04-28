@@ -16,7 +16,7 @@ extern uint64_t BLOCK_SIZE;
 extern uint64_t BLOCK_COUNT;
 extern int BLOCK_DIMENSION_CUTOFF;
 extern int BLOCK_DIMENSIONS;
-extern u_int64_t SHIPS;
+extern double SHIPS;
 extern u_int64_t CELLS;
 extern uint64_t DATA_SIZE;
 extern uint64_t OUTPUT_SIZE;

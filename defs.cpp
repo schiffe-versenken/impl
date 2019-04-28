@@ -3,7 +3,7 @@
 
 int N = 0;
 int D = 0;
-u_int64_t SHIPS = 0;
+double SHIPS = 0;
 u_int64_t CELLS = 0;
 
 int BLOCK_DIMENSIONS = 0;
@@ -62,8 +62,8 @@ void initValues(uint64_t n, uint64_t d, uint64_t ds, uint64_t s, int seed)
 	BLOCK_COUNT = CELLS / BLOCK_SIZE;
 
 	DATA_SIZE = BLOCK_SIZE;
-	OUTPUT_SIZE = std::min(DATA_SIZE, (uint64_t) 1000000);
-	SHIPS_SIZE = std::min<uint64_t>(SHIPS, s);
+	OUTPUT_SIZE = 1000000;
+	SHIPS_SIZE = s;
 
 	GENERATOR = std::mt19937_64(seed);
 
