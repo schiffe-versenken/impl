@@ -125,8 +125,8 @@ void sparseGridStrategy(StrategyBlock* b, BlockCoordinate c) {
 }
 
 void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
-	int relativeShotNumber = 1;
-	int realShotNumber = 1;
+	u_int64_t relativeShotNumber = 1;
+	u_int64_t realShotNumber = 1;
 	Coordinate currentCell = emptyCoord();
 	for (int j = 0; j < BLOCK_DIMENSION_CUTOFF; j++) {
 		currentCell[j] = c[j];
