@@ -5,8 +5,11 @@
 #include <cassert>
 
 std::function<void(StrategyBlock*, BlockCoordinate)> generator;
+//Realtive Index of sobol shot sequence
 thread_local unsigned SHOTSSOBOL = 0;
+//Last shot done by last pack of shots
 thread_local Coordinate lastPackShot = emptyCoord();
+//Index of first 0 of last number from last pack
 thread_local unsigned lastPackZero = 1;
 
 uint64_t toIndex(Coordinate& c)
@@ -19,6 +22,8 @@ uint64_t toIndex(Coordinate& c)
 	return index;
 }
 
+//One dimensional halton, returns the i-th halton number, when i is given
+// by index.
 int halton(int base, double index) {
 	double coeficient = 1.0;
 	double result = 0.0;
@@ -30,14 +35,21 @@ int halton(int base, double index) {
 	return (int)std::floor(result * N);
 }
 
+//Computes a pack of sobol coordinates. The pack has the size 1000.
+//Uses SHOTSOBOL to get the relaitve current index. So that we can
+//traverse a big field of Coordinates in steps of 1000 shots.
 std::vector<Coordinate> sobolPacks() {
-
+	//Bits of the reliatve index
 	unsigned L = std::ceil(std::log2(SHOTSSOBOL + 1000));
-
+	
+	//direction numbers as used in the generation of sobol numbers.
 	std::vector<unsigned> directionNumbers(L + 1, 1);
+	
+	//describes the index of the first occuring 0 in the
+	// index which is in binary
 	std::vector<unsigned> firstZero(1000, 1);
 
-	//getting index of first 0
+	//computing index of first 0
 	for (unsigned i = SHOTSSOBOL; i < SHOTSSOBOL + 1000; i++) {
 		if (i == 0) continue;
 		firstZero[i - SHOTSSOBOL] = 1;
@@ -47,15 +59,19 @@ std::vector<Coordinate> sobolPacks() {
 			firstZero[i - SHOTSSOBOL]++;
 		}
 	}
+	//saving last index for potential next pack.
 	lastPackZero = firstZero[999];
 
+	//Initializing pack
 	std::vector<Coordinate> pack(1000);
 
+	//Computing direction numbers of first dimension
 	unsigned *directionNumber = new unsigned[L + 1];
 	for (unsigned i = 1; i <= L; i++) {
 		directionNumber[i] = 1 << (32 - i); 
 	}
 
+	//Computing the first dimension coordinate of every point in the pack.
 	unsigned *currentCoord = new unsigned[1000];
 	currentCoord[0] = 0;
 	pack[0] = emptyCoord();
@@ -63,22 +79,25 @@ std::vector<Coordinate> sobolPacks() {
 		pack[i] = emptyCoord();
 		if (i == 0) {
 			if (SHOTSSOBOL == 0) {
+				//Nothing to do for the absolute first point
 				continue;
 			}
 			else {
+				//this is the first point of a new pack, which needs computing
 				currentCoord[i] = lastPackShot[0] ^ directionNumber[lastPackZero];
 			}
 		}
 		else {
+			//Every other point that is not the first of a pack or the absolute first
 			currentCoord[i] = currentCoord[i - 1] ^ directionNumber[firstZero[i - 1]];
 		}
 		pack[i][0] = floor((double)currentCoord[i] / pow(2.0, 32) * 10);
 	}
 	delete[] directionNumber;delete[] currentCoord;
 
-
+	//Computing the remaining dimensions/coordinates of the points
 	for (unsigned j = 1; j <= D - 1; j++) {
-
+		//getting the values of s, a, and the m_i's,which are hardcoded
 		unsigned s = GRADSOBOL[j - 1];
 		unsigned a = COEFFSOBOL[j - 1];
 		std::vector<unsigned> m(s + 1);
@@ -90,6 +109,7 @@ std::vector<Coordinate> sobolPacks() {
 			m[i] = INITVALSOBOL[i - 1 + temp];
 		}
 
+		//Computing direction numbers for dimension j
 		unsigned *directionNumber = new unsigned[L + 1];
 		if (L <= s) {
 			for (unsigned i = 1; i <= L; i++) {
@@ -108,6 +128,7 @@ std::vector<Coordinate> sobolPacks() {
 			}
 		}
 
+		//Computing the jth dimension/coordinate of the points, analogously to before
 		unsigned *currentCoord = new unsigned[1000];
 		currentCoord[0] = 0;
 		for (unsigned i = 1; i <= 1000 - 1; i++) {
@@ -127,7 +148,9 @@ std::vector<Coordinate> sobolPacks() {
 		delete[] directionNumber;delete[] currentCoord;
 	}
 
+	//Increasing relative shot number
 	SHOTSSOBOL += 1000;
+	//saving last shot of pack
 	lastPackShot = pack[999];
 
 	return pack;
