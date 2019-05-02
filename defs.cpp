@@ -31,6 +31,10 @@ thread_local std::vector<u_int64_t> LEVEL_SHOTS_SPARSE(100, 1);
 std::vector<u_int64_t> MAX_LEVEL_SHOTS_SPARSE;
 std::vector<int> PRIMES;
 thread_local std::vector<bool> haltonHits(BLOCK_SIZE, false);
+std::vector<unsigned> GRADSOBOL = {1,2,3,3,4,4,5,5,5,5,5,5,6,6};
+std::vector<unsigned> COEFFSOBOL = { 0,1,1,2,1,4,2,4,7,11,13,14,1,13 };
+std::vector<unsigned> INITVALSOBOL = { 1,1,3,1,3,1,1,1,1,1,1,3,3,1,3,5,13,1,1,5,5,17,1,1,5,5,5,1,1,7,11,19,1,1,5,1,1,1,1,1,3,11,1,3,5,5,31,1,3,3,9,7,49,1,1,1,15,21,21 };
+
 
 double FLEETS = 0.0;
 

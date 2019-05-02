@@ -5,6 +5,9 @@
 #include <cassert>
 
 std::function<void(StrategyBlock*, BlockCoordinate)> generator;
+thread_local unsigned SHOTSSOBOL = 0;
+thread_local Coordinate lastPackShot = emptyCoord();
+thread_local unsigned lastPackZero = 1;
 
 uint64_t toIndex(Coordinate& c)
 {
@@ -25,6 +28,109 @@ int halton(int base, double index) {
 		index = std::floor(index / base);
 	}
 	return (int)std::floor(result * N);
+}
+
+std::vector<Coordinate> sobolPacks() {
+
+	unsigned L = std::ceil(std::log2(SHOTSSOBOL + 1000));
+
+	std::vector<unsigned> directionNumbers(L + 1, 1);
+	std::vector<unsigned> firstZero(1000, 1);
+
+	//getting index of first 0
+	for (unsigned i = SHOTSSOBOL; i < SHOTSSOBOL + 1000; i++) {
+		if (i == 0) continue;
+		firstZero[i - SHOTSSOBOL] = 1;
+		unsigned value = i;
+		while (value & 1) {
+			value >>= 1;
+			firstZero[i - SHOTSSOBOL]++;
+		}
+	}
+	lastPackZero = firstZero[999];
+
+	std::vector<Coordinate> pack(1000);
+
+	unsigned *directionNumber = new unsigned[L + 1];
+	for (unsigned i = 1; i <= L; i++) {
+		directionNumber[i] = 1 << (32 - i); 
+	}
+
+	unsigned *currentCoord = new unsigned[1000];
+	currentCoord[0] = 0;
+	pack[0] = emptyCoord();
+	for (unsigned i = 0; i < 1000 ; i++) {
+		pack[i] = emptyCoord();
+		if (i == 0) {
+			if (SHOTSSOBOL == 0) {
+				continue;
+			}
+			else {
+				currentCoord[i] = lastPackShot[0] ^ directionNumber[lastPackZero];
+			}
+		}
+		else {
+			currentCoord[i] = currentCoord[i - 1] ^ directionNumber[firstZero[i - 1]];
+		}
+		pack[i][0] = floor((double)currentCoord[i] / pow(2.0, 32) * 10);
+	}
+	delete[] directionNumber;delete[] currentCoord;
+
+
+	for (unsigned j = 1; j <= D - 1; j++) {
+
+		unsigned s = GRADSOBOL[j - 1];
+		unsigned a = COEFFSOBOL[j - 1];
+		std::vector<unsigned> m(s + 1);
+		unsigned temp = 0;
+		for (unsigned i = 0; i < j - 1; i++) {
+			temp += GRADSOBOL[i];
+		}
+		for (unsigned i = 1; i <= s; i++) {
+			m[i] = INITVALSOBOL[i - 1 + temp];
+		}
+
+		unsigned *directionNumber = new unsigned[L + 1];
+		if (L <= s) {
+			for (unsigned i = 1; i <= L; i++) {
+				directionNumber[i] = m[i] << (32 - i);
+			}
+		}
+		else {
+			for (unsigned i = 1; i <= s; i++){
+				directionNumber[i] = m[i] << (32 - i);
+			}
+			for (unsigned i = s + 1; i <= L; i++) {
+				directionNumber[i] = directionNumber[i - s] ^ (directionNumber[i - s] >> s);
+				for (unsigned k = 1; k <= s - 1; k++) {
+					directionNumber[i] ^= (((a >> (s - 1 - k)) & 1) * directionNumber[i - k]);
+				}
+			}
+		}
+
+		unsigned *currentCoord = new unsigned[1000];
+		currentCoord[0] = 0;
+		for (unsigned i = 1; i <= 1000 - 1; i++) {
+			if (i == 0) {
+				if (SHOTSSOBOL == 0) {
+					continue;
+				}
+				else {
+					currentCoord[i] = lastPackShot[j] ^ directionNumber[lastPackZero];
+				}
+			}
+			else {
+				currentCoord[i] = currentCoord[i - 1] ^ directionNumber[firstZero[i - 1]];
+			}
+			pack[i][j] = floor((double)currentCoord[i] / pow(2.0, 32) * 10);
+		}
+		delete[] directionNumber;delete[] currentCoord;
+	}
+
+	SHOTSSOBOL += 1000;
+	lastPackShot = pack[999];
+
+	return pack;
 }
 
 void randomStrategy(StrategyBlock* b, BlockCoordinate c)
@@ -154,11 +260,28 @@ void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
 	
 }
 
+void sobolStrategy(StrategyBlock* b, BlockCoordinate c) {
+	u_int64_t relativeShotNumber = 1;
+	std::vector<Coordinate> shots;
+	
+	while (relativeShotNumber <= BLOCK_SIZE) {
+		shots = sobolPacks();
+		for (int i = 0; i < 1000; i++) {
+			if (!haltonHits[toIndex(shots[i])]) {
+				haltonHits[toIndex(shots[i])] = true;
+				(*b)[toIndex(shots[i])] = relativeShotNumber;
+				relativeShotNumber++;
+			}
+		}
+	}
+}
+
 std::map<std::string, std::function<void (StrategyBlock*, BlockCoordinate)>> strategyNames = {
 	{ "random", &randomStrategy },
 	{ "fullGrid", &fullGridStrategy },
 	{ "sparseGrid", &sparseGridStrategy},
-	{ "halton", &haltonStrategy}
+	{ "halton", &haltonStrategy},
+	{ "sobol", &sobolStrategy},
 };
 
 void createStrategy(std::string& name)
