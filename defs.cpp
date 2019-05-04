@@ -63,7 +63,7 @@ void initValues(uint64_t n, uint64_t d, uint64_t ds, uint64_t s, int seed)
 
 	DATA_SIZE = BLOCK_SIZE;
 	OUTPUT_SIZE = 1000000;
-	SHIPS_SIZE = s;
+	SHIPS_SIZE = s > SHIPS ? SHIPS : s;
 
 	GENERATOR = std::mt19937_64(seed);
 
@@ -119,40 +119,6 @@ void initValues(uint64_t n, uint64_t d, uint64_t ds, uint64_t s, int seed)
 	}
 
 	std::vector<int> counters(lower + 1, 0);
-	for (int i = 1; i <= lower; i++) {
-		counters[i] = i;
-	}
-	Coordinate worker(D, 0);
-	for (int i = 0; i < (int)pow((double)lower + 1, D); i++) {
-		int sumLevel = 0;
-		for (int k = 0; k < D; k++) {
-			sumLevel += worker[k];
-		}
-		if (sumLevel >= lower) {
-			//To account for redundancy on the last level if N is not multiple of (16*2^k)-1
-			int addition = 1;
-			for (int j = 0; j < D; j++) {
-				if (worker[j] == counters[lower]) {
-					addition = addition * lastLevelRedundancy;
-				}
-				else {
-					addition = addition * std::pow((double)2, worker[j]);
-				}
-			}
-			MAX_LEVEL_SHOTS_SPARSE[sumLevel] += addition;
-
-		}
-
-		for (int j = D - 1; j >= 0; j--) {
-			if (worker[j] == lower) {
-				worker[j] = 0;
-			}
-			else {
-				worker[j] = counters[worker[j] + 1];
-				break;
-			}
-		}
-	}
 
 	PRIMES = {2,3,5,7,11,13,17,19,23,29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 
 		103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199 };

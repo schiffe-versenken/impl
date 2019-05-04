@@ -3,6 +3,7 @@
 #include <map>
 #include <functional>
 #include <cassert>
+#include <iostream>
 
 std::function<void(StrategyBlock*, BlockCoordinate)> generator;
 
@@ -168,8 +169,8 @@ BlockCoordinate generateBlock(StrategyBlock* b, int index)
 {
 	BlockCoordinate coord = emptyBlockCoord();
 	for (int d = BLOCK_DIMENSION_CUTOFF - 1; d >= 0; --d) {
-		coord[d] = index / static_cast<int>(DIMENSION_POWERS[d]);
-		index = index % static_cast<int>(DIMENSION_POWERS[d]);
+		coord[d] = index / DIMENSION_POWERS[d];
+		index = index % DIMENSION_POWERS[d];
 	}
 
 	generator(b, coord);

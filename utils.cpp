@@ -38,7 +38,7 @@ void genShipsAndCalcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns
 	calcTurns(ships, turns);
 }
 
-void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
+void calcExpectedValue(int id, std::vector<uint64_t>* values)
 {
 	std::vector<Ship> ships = std::vector<Ship>(SHIPS_SIZE, Ship {emptyCoord(), emptyCoord()});
 	std::vector<uint64_t> turns = std::vector<uint64_t>(SHIPS_SIZE, CELLS);
@@ -54,7 +54,7 @@ void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
 	std::cout << "thread " << id << " finished \n";
 }
 
-void outputData(std::vector<std::atomic<uint64_t>>& values, uint64_t n)
+void outputData(std::vector<uint64_t>& values, uint64_t n)
 {
 	std::ofstream resultsFile;
 
@@ -72,10 +72,11 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, uint64_t n)
 	double eShips = 0;
 	for (int i = 0; i < OUTPUT_SIZE; ++i)
 	{
-		sum += values[i];
+		int last = i == 0 ? 0 : values[i - 1];
+		sum = values[i];
 		double newValueSum = sum * (SHIPS / (double)n);
-		uint64_t turns = (i +1) * (CELLS / OUTPUT_SIZE);
-		double pShips = values[i] / static_cast<double>(n);
+		double turns = (i + 1) * (CELLS / OUTPUT_SIZE);
+		double pShips = (values[i] - last) / static_cast<double>(n);
 		eShips += pShips * turns;
 		resultsFile << turns << "," << (sum / static_cast<double>(n)) << "," << newValueSum - SHIPS << " ";
 	}
@@ -91,15 +92,25 @@ void calcExpectedValueMT(int threads)
 	auto start = std::chrono::system_clock::now();
 	std::thread t[threads];
 
-	std::vector<std::atomic<uint64_t>> values = std::vector<std::atomic<uint64_t>>(OUTPUT_SIZE);
-	uint64_t n = threads * SHIPS_SIZE;
+	std::vector<uint64_t> values = std::vector<uint64_t>(OUTPUT_SIZE, SHIPS_SIZE);
+	std::vector<std::vector<uint64_t>> newValues = std::vector<std::vector<uint64_t>>(threads, std::vector<uint64_t>(OUTPUT_SIZE, 0));
+	uint64_t n = SHIPS_SIZE;
 	for(int i=0; i < threads;++i)
 	{
-		t[i] = std::thread(calcExpectedValue, i, &values);
+		t[i] = std::thread(calcExpectedValue, i, &newValues[i]);
 	}
 	for (int i = 0; i < threads; ++i)
 	{
 		t[i].join();
+		uint64_t sum = 0;
+		for (int j = 0;j < OUTPUT_SIZE; ++j)
+		{
+			sum += newValues[i][j];
+			if (sum < values[j])
+			{
+				values[j] = sum;
+			}
+		}
 	}
 
 	outputData(values, n);
