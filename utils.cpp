@@ -92,7 +92,7 @@ void calcExpectedValueMT(int threads)
 	auto start = std::chrono::system_clock::now();
 	std::thread t[threads];
 
-	std::vector<uint64_t> values = std::vector<uint64_t>(OUTPUT_SIZE, SHIPS_SIZE);
+	std::vector<uint64_t> values = std::vector<uint64_t>(OUTPUT_SIZE, 0);
 	std::vector<std::vector<uint64_t>> newValues = std::vector<std::vector<uint64_t>>(threads, std::vector<uint64_t>(OUTPUT_SIZE, 0));
 	uint64_t n = SHIPS_SIZE;
 	for(int i=0; i < threads;++i)
@@ -106,7 +106,7 @@ void calcExpectedValueMT(int threads)
 		for (int j = 0;j < OUTPUT_SIZE; ++j)
 		{
 			sum += newValues[i][j];
-			if (sum < values[j])
+			if (sum > values[j])
 			{
 				values[j] = sum;
 			}
