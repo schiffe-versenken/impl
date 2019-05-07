@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "strategies.h"
 
+//Reads the command and calls methods with it.
 int main(int argc, char **argv)
 {
 	int c;
@@ -89,6 +90,8 @@ int main(int argc, char **argv)
 
 	initValues(n, d, ds, s, seed);
 	createStrategy(stratname);
+
+	//To start the calculation.
 	calcExpectedValueMT(threads);
 	exit(0);
 }

@@ -4,6 +4,7 @@
 #include <cassert>
 #endif
 
+//To get a ship generator
 ShipGenerator::ShipGenerator() : values(N, 0)
 {
 	int sum = 0;
@@ -15,6 +16,7 @@ ShipGenerator::ShipGenerator() : values(N, 0)
 	}
 }
 
+//get min and max pair for one dimension
 std::pair<int, int> ShipGenerator::getMinMax(int index)
 {
 	for (int j = N - 1; j >= 0; j--)
@@ -27,6 +29,7 @@ std::pair<int, int> ShipGenerator::getMinMax(int index)
 	}
 }
 
+//Gets a ship from an index
 Ship ShipGenerator::fromIndex(uint64_t index)
 {
 	Coordinate min = emptyCoord();

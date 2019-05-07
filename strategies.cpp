@@ -12,6 +12,7 @@ thread_local Coordinate lastPackShot = emptyCoord();
 //Index of first 0 of last number from last pack
 thread_local unsigned lastPackZero = 1;
 
+//Generates an index from a coordinate
 uint64_t toIndex(Coordinate& c)
 {
 	uint64_t index = 0;
@@ -156,6 +157,8 @@ std::vector<Coordinate> sobolPacks(int numb) {
 	return pack;
 }
 
+//Generates random strategy by filling the Strategyblock and then swapping the numbers (for one block)
+// for multiple blocks uses generator
 void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 {
 	static std::uniform_int_distribution<u_int64_t> dis(0, CELLS - 1);
@@ -177,6 +180,8 @@ void randomStrategy(StrategyBlock* b, BlockCoordinate c)
 	}
 }
 
+//Full grid strategy. Calculates for each cell in a block to which layer it belongs.
+// Then it can calculate to corresponding shot number from that layer.
 void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 {
 	Coordinate currentCell;
@@ -215,6 +220,8 @@ void fullGridStrategy(StrategyBlock* b, BlockCoordinate c)
 	}
 }
 
+//Works similar to the full Grid strategy. The only difference is that the calculation
+// of the maximum shots per layer whwere harded here.
 void sparseGridStrategy(StrategyBlock* b, BlockCoordinate c) {
 
 	Coordinate currentCell;
@@ -253,6 +260,9 @@ void sparseGridStrategy(StrategyBlock* b, BlockCoordinate c) {
 	}
 }
 
+/*Calls for a halton number while keeping track of the realShotNumber.
+Only when it gets a new cell (checks haltonHits) it increases the
+relativeShotNumber.*/
 void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
 	u_int64_t relativeShotNumber = 1;
 	u_int64_t realShotNumber = 1;
@@ -283,6 +293,7 @@ void haltonStrategy(StrategyBlock* b, BlockCoordinate c) {
 	
 }
 
+//Calls for packs of sobol points and checks them for hits. 
 void sobolStrategy(StrategyBlock* b, BlockCoordinate c) {
 	u_int64_t relativeShotNumber = 1;
 	std::vector<Coordinate> shots;
@@ -299,6 +310,7 @@ void sobolStrategy(StrategyBlock* b, BlockCoordinate c) {
 	}
 }
 
+//All startegy commands
 std::map<std::string, std::function<void (StrategyBlock*, BlockCoordinate)>> strategyNames = {
 	{ "random", &randomStrategy },
 	{ "fullGrid", &fullGridStrategy },
@@ -324,6 +336,7 @@ BlockCoordinate generateBlock(StrategyBlock* b, int index)
 	return coord;
 }
 
+//Traverses the blocks and finds for any ship the minimal shot.
 uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinate& c, Coordinate& c1, Coordinate& c2)
 {
 	for (int i = BLOCK_DIMENSIONS - 1; i >= 0; --i) {
@@ -390,6 +403,7 @@ uint64_t traverse(StrategyBlock& strat, std::vector<bool>& directions, Coordinat
 
 }
 
+//To check if a ship is in a block.
 bool inBlock(BlockCoordinate& c, Ship& s)
 {
 	for (int d = 0; d < BLOCK_DIMENSION_CUTOFF; ++d) {
@@ -401,6 +415,8 @@ bool inBlock(BlockCoordinate& c, Ship& s)
 	return true;
 }
 
+//Combines the minimal hits for every block to find out when a ship was hit the first time
+//scaled for the whole cube.
 void findMins(int blockIndex, StrategyBlock* strat, std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
 	std::vector<bool> workDirections = std::vector<bool>(BLOCK_DIMENSIONS, true);

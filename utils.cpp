@@ -10,6 +10,7 @@
 #include <fstream>
 #include <atomic>
 
+//To get the turns when a ship gets shot. Used by every thread.
 void calcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
 	static StrategyBlock* block = emptyStrategyBlock();
@@ -26,6 +27,7 @@ void calcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 
 }
 
+//Generates ship then calls to traverse the blocks.
 void genShipsAndCalcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns)
 {
 	static ShipGenerator gen = ShipGenerator();
@@ -38,6 +40,7 @@ void genShipsAndCalcTurns(std::vector<Ship>& ships, std::vector<uint64_t>& turns
 	calcTurns(ships, turns);
 }
 
+//To get values to calculate expected value per thread.
 void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
 {
 	std::vector<Ship> ships = std::vector<Ship>(SHIPS_SIZE, Ship {emptyCoord(), emptyCoord()});
@@ -54,6 +57,7 @@ void calcExpectedValue(int id, std::vector<std::atomic<uint64_t>>* values)
 	std::cout << "thread " << id << " finished \n";
 }
 
+//To output the data in a result file and calculate expected values for ships and fleets
 void outputData(std::vector<std::atomic<uint64_t>>& values, uint64_t n)
 {
 	std::ofstream resultsFile;
@@ -112,6 +116,7 @@ void outputData(std::vector<std::atomic<uint64_t>>& values, uint64_t n)
 	std::cout << "Output written " << mpf_get_d(m) << std::endl;
 }
 
+//starts the calculations per thread and after their join outputs the data.
 void calcExpectedValueMT(int threads)
 {
 	auto start = std::chrono::system_clock::now();
